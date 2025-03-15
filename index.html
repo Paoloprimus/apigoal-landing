@@ -30,6 +30,7 @@
 
             const email = document.getElementById("email").value;
             const message = document.getElementById("message");
+            const token = Math.random().toString(36).substr(2, 10); // Generate random token
 
             try {
                 const response = await fetch("https://wenndkgeebooikzikhew.supabase.co/rest/v1/beta_testers", {
@@ -37,19 +38,22 @@
                     headers: {
                         "Content-Type": "application/json",
                         "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlbm5ka2dlZWJvb2lremlraGV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIwMjk0NjUsImV4cCI6MjA1NzYwNTQ2NX0.4_Pnkffn1mPUkHyYfk6bDmdWk2L14LTV5hEEvDaWu8c",
-                        "Authorization": "Bearer your-anon-key"
+                        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlbm5ka2dlZWJvb2lremlraGV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIwMjk0NjUsImV4cCI6MjA1NzYwNTQ2NX0.4_Pnkffn1mPUkHyYfk6bDmdWk2L14LTV5hEEvDaWu8c"
                     },
-                    body: JSON.stringify({ email })
+                    body: JSON.stringify({ email, verified: false, token })
                 });
 
                 if (response.ok) {
                     message.innerText = "✅ Thank you! Check your email for verification.";
                     message.classList.add("text-green-600");
                 } else {
+                    const errorData = await response.json();
+                    console.error("Error:", errorData);
                     message.innerText = "❌ Something went wrong. Try again.";
                     message.classList.add("text-red-600");
                 }
             } catch (error) {
+                console.error("Network Error:", error);
                 message.innerText = "❌ Network error. Try again later.";
                 message.classList.add("text-red-600");
             }
