@@ -30,7 +30,6 @@
 
             const email = document.getElementById("email").value;
             const message = document.getElementById("message");
-            const token = Math.random().toString(36).substr(2, 10); // Generate random token
 
             try {
                 const response = await fetch("https://wenndkgeebooikzikhew.supabase.co/rest/v1/beta_testers", {
@@ -40,7 +39,7 @@
                         "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlbm5ka2dlZWJvb2lremlraGV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIwMjk0NjUsImV4cCI6MjA1NzYwNTQ2NX0.4_Pnkffn1mPUkHyYfk6bDmdWk2L14LTV5hEEvDaWu8c",
                         "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlbm5ka2dlZWJvb2lremlraGV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIwMjk0NjUsImV4cCI6MjA1NzYwNTQ2NX0.4_Pnkffn1mPUkHyYfk6bDmdWk2L14LTV5hEEvDaWu8c"
                     },
-                    body: JSON.stringify({ email, verified: false, token })
+                    body: JSON.stringify({ email, verified: false })
                 });
 
                 if (response.ok) {
