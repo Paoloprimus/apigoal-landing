@@ -15,14 +15,45 @@
             <p class="mb-4">A service to monitor AI API costs, optimize usage, and compare providers in real-time.</p>
             <p class="mb-6 font-semibold">We are entering the beta testing phase. Want to participate?</p>
             
-            <form action="#" method="POST" class="w-full">
-                <input type="email" name="email" placeholder="Enter your email" required class="w-full p-2 border rounded-lg mb-4">
+            <form id="beta-form" class="w-full">
+                <input type="email" id="email" name="email" placeholder="Enter your email" required class="w-full p-2 border rounded-lg mb-4">
                 <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">Join the Beta</button>
             </form>
-            
-            <p class="text-sm text-gray-600 mt-4">No spam, only project updates and beta credentials.</p>
-            <p class="text-blue-500 text-sm font-semibold mt-2">Limited spots available.</p>
+
+            <p id="message" class="text-sm text-gray-600 mt-4"></p>
         </div>
     </div>
+
+    <script>
+        document.getElementById("beta-form").addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const email = document.getElementById("email").value;
+            const message = document.getElementById("message");
+
+            try {
+                const response = await fetch("https://wenndkgeebooikzikhew.supabase.co/rest/v1/beta_testers", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlbm5ka2dlZWJvb2lremlraGV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIwMjk0NjUsImV4cCI6MjA1NzYwNTQ2NX0.4_Pnkffn1mPUkHyYfk6bDmdWk2L14LTV5hEEvDaWu8c",
+                        "Authorization": "Bearer your-anon-key"
+                    },
+                    body: JSON.stringify({ email })
+                });
+
+                if (response.ok) {
+                    message.innerText = "✅ Thank you! Check your email for verification.";
+                    message.classList.add("text-green-600");
+                } else {
+                    message.innerText = "❌ Something went wrong. Try again.";
+                    message.classList.add("text-red-600");
+                }
+            } catch (error) {
+                message.innerText = "❌ Network error. Try again later.";
+                message.classList.add("text-red-600");
+            }
+        });
+    </script>
 </body>
 </html>
