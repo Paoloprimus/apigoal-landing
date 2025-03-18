@@ -31,13 +31,17 @@
             const email = document.getElementById("email").value;
             const message = document.getElementById("message");
 
+            // Definiamo una sola volta l'API key di Supabase
+            const SUPABASE_API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlbm5ka2dlZWJvb2lremlraGV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIwMjk0NjUsImV4cCI6MjA1NzYwNTQ2NX0.4_Pnkffn1mPUkHyYfk6bDmdWk2L14LTV5hEEvDaWu8c";
+            const SUPABASE_URL = "https://wenndkgeebooikzikhew.supabase.co";
+
             try {
                 // 1️⃣ Registra l'utente su Supabase Auth
-                const authResponse = await fetch("https://wenndkgeebooikzikhew.supabase.co/auth/v1/signup", {
+                const authResponse = await fetch(`${SUPABASE_URL}/auth/v1/signup`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
-                        "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlbm5ka2dlZWJvb2lremlraGV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIwMjk0NjUsImV4cCI6MjA1NzYwNTQ2NX0.4_Pnkffn1mPUkHyYfk6bDmdWk2L14LTV5hEEvDaWu8c"
+                        "apikey": SUPABASE_API_KEY
                     },
                     body: JSON.stringify({
                         email: email, 
@@ -55,12 +59,12 @@
                 }
 
                 // 2️⃣ Salva i dati nel database `beta_testers`
-                const dbResponse = await fetch("https://wenndkgeebooikzikhew.supabase.co/rest/v1/beta_testers", {
+                const dbResponse = await fetch(`${SUPABASE_URL}/rest/v1/beta_testers`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
-                        "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlbm5ka2dlZWJvb2lremlraGV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIwMjk0NjUsImV4cCI6MjA1NzYwNTQ2NX0.4_Pnkffn1mPUkHyYfk6bDmdWk2L14LTV5hEEvDaWu8c",
-                        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlbm5ka2dlZWJvb2lremlraGV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIwMjk0NjUsImV4cCI6MjA1NzYwNTQ2NX0.4_Pnkffn1mPUkHyYfk6bDmdWk2L14LTV5hEEvDaWu8c"
+                        "apikey": SUPABASE_API_KEY,
+                        "Authorization": `Bearer ${SUPABASE_API_KEY}`
                     },
                     body: JSON.stringify({ email, verified: false })
                 });
