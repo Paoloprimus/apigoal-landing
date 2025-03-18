@@ -27,7 +27,8 @@
         async function checkSurveyStatus() {
             const email = localStorage.getItem("user_email");
             if (!email) {
-                window.location.href = "https://apigoal.com"; // Se non c’è email, torna alla landing
+                console.warn("No user email found in localStorage, redirecting...");
+                window.location.href = "https://apigoal.com"; // Torna alla landing se l'email non è salvata
                 return;
             }
 
@@ -41,10 +42,15 @@
                     }
                 });
 
+                if (!response.ok) {
+                    console.error("Failed to fetch survey data:", await response.text());
+                    return;
+                }
+
                 const data = await response.json();
                 if (data.length > 0) {
-                    // 🔹 Se ha già risposto, lo mandiamo alla dashboard
-                    window.location.href = "https://apigoal.com/dashboard";
+                    console.log("User already completed survey, redirecting...");
+                    window.location.href = "https://apigoal.com/dashboard"; // Se ha già risposto, va alla dashboard
                 }
             } catch (error) {
                 console.error("Survey Check Error:", error);
