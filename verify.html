@@ -26,44 +26,28 @@
             }
 
             try {
-                // 🔹 Facciamo una richiesta a Supabase per verificare l'email
+                // 🔹 Verifica dell'email su Supabase
                 const response = await fetch("https://wenndkgeebooikzikhew.supabase.co/auth/v1/verify", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
-                        "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlbm5ka2dlZWJvb2lremlraGV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIwMjk0NjUsImV4cCI6MjA1NzYwNTQ2NX0.4_Pnkffn1mPUkHyYfk6bDmdWk2L14LTV5hEEvDaWu8c"
+                        "apikey": "TUA_API_KEY"
                     },
                     body: JSON.stringify({ token, type: "signup" })  // 🔹 Deve rimanere "signup"
                 });
 
-                const result = await response.json();
-
                 if (response.ok) {
-                    // 🔹 Recuperiamo l'email dell'utente con il token e la salviamo nel localStorage
-                    const userResponse = await fetch("https://wenndkgeebooikzikhew.supabase.co/auth/v1/user", {
-                        method: "GET",
-                        headers: {
-                            "Authorization": `Bearer ${token}`,
-                            "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlbm5ka2dlZWJvb2lremlraGV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIwMjk0NjUsImV4cCI6MjA1NzYwNTQ2NX0.4_Pnkffn1mPUkHyYfk6bDmdWk2L14LTV5hEEvDaWu8c"
-                        }
-                    });
-
-                    const userData = await userResponse.json();
-
-                    if (userResponse.ok && userData.email) {
-                        localStorage.setItem("user_email", userData.email); // 🔹 Salviamo l'email nel browser
-                    }
-
                     message.innerText = "✅ Your email has been verified! Redirecting...";
                     message.classList.add("text-green-600");
 
-                    // 🔹 Dopo la verifica, mandiamo l'utente al questionario
+                    // 🔹 Reindirizza al questionario
                     setTimeout(() => {
                         window.location.href = "https://apigoal.com/survey";
                     }, 3000);
                 } else {
-                    console.error("Verification Error:", result);
-                    message.innerText = `❌ Verification failed: ${result.error_description || "Try again later."}`;
+                    const errorData = await response.json();
+                    console.error("Verification Error:", errorData);
+                    message.innerText = `❌ Verification failed: ${errorData.error_description || "Try again later."}`;
                     message.classList.add("text-red-600");
                 }
             } catch (error) {
