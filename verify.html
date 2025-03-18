@@ -19,7 +19,7 @@
             const token = params.get("token");
             const message = document.getElementById("message");
 
-            if (!token) {
+            if (!token || token === "") {
                 message.innerText = "❌ Invalid verification link.";
                 message.classList.add("text-red-600");
                 return;
@@ -50,7 +50,7 @@
                 message.classList.add("text-red-600");
             }
         }
-
+        
         verifyEmail();
     </script>
 
