@@ -26,23 +26,38 @@
             }
 
             try {
-                const response = await fetch("https://wenndkgeebooikzikhew.supabase.co/auth/v1/user", {
-                    method: "GET",
+                // 🔹 Facciamo una richiesta a Supabase per verificare l'email
+                const response = await fetch("https://wenndkgeebooikzikhew.supabase.co/auth/v1/verify", {
+                    method: "POST",
                     headers: {
-                        "Authorization": `Bearer ${token}`,
-                        "apikey": "TUA_API_KEY"
-                    }
+                        "Content-Type": "application/json",
+                        "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlbm5ka2dlZWJvb2lremlraGV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIwMjk0NjUsImV4cCI6MjA1NzYwNTQ2NX0.4_Pnkffn1mPUkHyYfk6bDmdWk2L14LTV5hEEvDaWu8c"
+                    },
+                    body: JSON.stringify({ token, type: "signup" })  // 🔹 Deve rimanere "signup"
                 });
 
                 const result = await response.json();
 
-                if (response.ok && result.email) {
-                    localStorage.setItem("user_email", result.email); // 🔹 Salviamo l’email nel localStorage
-                    
+                if (response.ok) {
+                    // 🔹 Recuperiamo l'email dell'utente con il token e la salviamo nel localStorage
+                    const userResponse = await fetch("https://wenndkgeebooikzikhew.supabase.co/auth/v1/user", {
+                        method: "GET",
+                        headers: {
+                            "Authorization": `Bearer ${token}`,
+                            "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlbm5ka2dlZWJvb2lremlraGV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIwMjk0NjUsImV4cCI6MjA1NzYwNTQ2NX0.4_Pnkffn1mPUkHyYfk6bDmdWk2L14LTV5hEEvDaWu8c"
+                        }
+                    });
+
+                    const userData = await userResponse.json();
+
+                    if (userResponse.ok && userData.email) {
+                        localStorage.setItem("user_email", userData.email); // 🔹 Salviamo l'email nel browser
+                    }
+
                     message.innerText = "✅ Your email has been verified! Redirecting...";
                     message.classList.add("text-green-600");
 
-                    // 🔹 Reindirizza alla pagina del questionario
+                    // 🔹 Dopo la verifica, mandiamo l'utente al questionario
                     setTimeout(() => {
                         window.location.href = "https://apigoal.com/survey";
                     }, 3000);
