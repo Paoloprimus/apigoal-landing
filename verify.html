@@ -16,10 +16,10 @@
     <script>
         async function verifyEmail() {
             const params = new URLSearchParams(window.location.search);
-            const token = params.get("token");
+            const token = params.get("token") || "";
             const message = document.getElementById("message");
 
-            if (!token || token === "") {
+            if (!token.trim()) {
                 message.innerText = "❌ Invalid verification link.";
                 message.classList.add("text-red-600");
                 return;
@@ -32,16 +32,22 @@
                         "Content-Type": "application/json",
                         "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlbm5ka2dlZWJvb2lremlraGV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIwMjk0NjUsImV4cCI6MjA1NzYwNTQ2NX0.4_Pnkffn1mPUkHyYfk6bDmdWk2L14LTV5hEEvDaWu8c"
                     },
-                    body: JSON.stringify({ token, type: "signup" })
+                    body: JSON.stringify({ token, type: "email" })  // Modificato "signup" in "email"
                 });
 
+                const result = await response.json();
+
                 if (response.ok) {
-                    message.innerText = "✅ Your email has been verified! You can now log in.";
+                    message.innerText = "✅ Your email has been verified! Redirecting...";
                     message.classList.add("text-green-600");
+
+                    // Reindirizza alla homepage dopo 3 secondi
+                    setTimeout(() => {
+                        window.location.href = "https://apigoal.com";
+                    }, 3000);
                 } else {
-                    const errorData = await response.json();
-                    console.error("Verification Error:", errorData);
-                    message.innerText = "❌ Verification failed. Please try again.";
+                    console.error("Verification Error:", result);
+                    message.innerText = `❌ Verification failed: ${result.error_description || "Try again later."}`;
                     message.classList.add("text-red-600");
                 }
             } catch (error) {
@@ -50,7 +56,7 @@
                 message.classList.add("text-red-600");
             }
         }
-        
+
         verifyEmail();
     </script>
 
