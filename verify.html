@@ -26,24 +26,25 @@
             }
 
             try {
-                const response = await fetch("https://wenndkgeebooikzikhew.supabase.co/auth/v1/verify", {
-                    method: "POST",
+                const response = await fetch("https://wenndkgeebooikzikhew.supabase.co/auth/v1/user", {
+                    method: "GET",
                     headers: {
-                        "Content-Type": "application/json",
-                        "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlbm5ka2dlZWJvb2lremlraGV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIwMjk0NjUsImV4cCI6MjA1NzYwNTQ2NX0.4_Pnkffn1mPUkHyYfk6bDmdWk2L14LTV5hEEvDaWu8c"
-                    },
-                    body: JSON.stringify({ token, type: "signup" })  // Supabase usa "signup" per la verifica dell'email
+                        "Authorization": `Bearer ${token}`,
+                        "apikey": "TUA_API_KEY"
+                    }
                 });
 
                 const result = await response.json();
 
-                if (response.ok) {
+                if (response.ok && result.email) {
+                    localStorage.setItem("user_email", result.email); // 🔹 Salviamo l’email nel localStorage
+                    
                     message.innerText = "✅ Your email has been verified! Redirecting...";
                     message.classList.add("text-green-600");
 
-                    // Reindirizza alla homepage dopo 3 secondi
+                    // 🔹 Reindirizza alla pagina del questionario
                     setTimeout(() => {
-                        window.location.href = "https://apigoal.com";
+                        window.location.href = "https://apigoal.com/survey";
                     }, 3000);
                 } else {
                     console.error("Verification Error:", result);
