@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beta Tester Survey - APIGOAL</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+</head>
+<body class="bg-gradient-to-b from-gray-100 to-gray-300 text-gray-900 flex items-center justify-center min-h-screen">
+
+    <div class="bg-white shadow-xl rounded-lg p-8 max-w-md w-full text-center">
+        <h1 class="text-2xl font-bold mb-4">🎯 APIGOAL Beta Survey</h1>
+        <p id="message" class="text-gray-600">Please take a moment to answer a few questions.</p>
+
+        <form id="survey-form" class="mt-4">
+            <label class="block text-left font-semibold">Which AI APIs do you use?</label>
+            <input type="text" id="api_usage" class="w-full p-2 border rounded-lg mt-1 mb-4" placeholder="e.g., OpenAI, Anthropic, Hugging Face" required>
+
+            <label class="block text-left font-semibold">What are your biggest concerns about AI API usage?</label>
+            <textarea id="concerns" class="w-full p-2 border rounded-lg mt-1 mb-4" placeholder="Write your answer here..." required></textarea>
+
+            <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">Submit</button>
+        </form>
+    </div>
+
+    <script>
+        async function checkSurveyStatus() {
+            const email = localStorage.getItem("user_email");
+            if (!email) {
+                window.location.href = "https://apigoal.com"; // Se non c’è email, torna alla landing
+                return;
+            }
+
+            try {
+                // 🔹 Controlliamo se l’utente ha già risposto al questionario
+                const response = await fetch(`https://wenndkgeebooikzikhew.supabase.co/rest/v1/beta_survey?email=eq.${email}`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "apikey": "TUA_API_KEY"
+                    }
+                });
+
+                const data = await response.json();
+                if (data.length > 0) {
+                    // 🔹 Se ha già risposto, lo mandiamo alla dashboard
+                    window.location.href = "https://apigoal.com/dashboard";
+                }
+            } catch (error) {
+                console.error("Survey Check Error:", error);
+            }
+        }
+
+        document.getElementById("survey-form").addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const email = localStorage.getItem("user_email");
+            if (!email) {
+                alert("Error: No email found. Please refresh the page.");
+                return;
+            }
+
+            const apiUsage = document.getElementById("api_usage").value;
+            const concerns = document.getElementById("concerns").value;
+
+            try {
+                // 🔹 Salviamo le risposte su Supabase
+                const response = await fetch("https://wenndkgeebooikzikhew.supabase.co/rest/v1/beta_survey", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "apikey": "TUA_API_KEY",
+                        "Authorization": "Bearer TUA_API_KEY"
+                    },
+                    body: JSON.stringify({ email, api_usage: apiUsage, concerns })
+                });
+
+                if (response.ok) {
+                    // 🔹 Dopo il salvataggio, reindirizziamo alla dashboard
+                    window.location.href = "https://apigoal.com/dashboard";
+                } else {
+                    const errorData = await response.json();
+                    console.error("Survey Error:", errorData);
+                    alert("Error submitting survey. Try again.");
+                }
+            } catch (error) {
+                console.error("Network Error:", error);
+                alert("Network error. Try again later.");
+            }
+        });
+
+        checkSurveyStatus();
+    </script>
+
+</body>
+</html>
