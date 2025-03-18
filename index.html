@@ -32,7 +32,30 @@
             const message = document.getElementById("message");
 
             try {
-                const response = await fetch("https://wenndkgeebooikzikhew.supabase.co/rest/v1/beta_testers", {
+                // 1️⃣ Registra l'utente su Supabase Auth
+                const authResponse = await fetch("https://wenndkgeebooikzikhew.supabase.co/auth/v1/signup", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "apikey": "TUA_API_KEY"
+                    },
+                    body: JSON.stringify({
+                        email: email, 
+                        password: "TemporaryPass123!"  // Password temporanea obbligatoria
+                    })
+                });
+
+                const authData = await authResponse.json();
+
+                if (!authResponse.ok) {
+                    console.error("Auth Error:", authData);
+                    message.innerText = `❌ Signup error: ${authData.message || "Try again."}`;
+                    message.classList.add("text-red-600");
+                    return;
+                }
+
+                // 2️⃣ Salva i dati nel database `beta_testers`
+                const dbResponse = await fetch("https://wenndkgeebooikzikhew.supabase.co/rest/v1/beta_testers", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -42,13 +65,13 @@
                     body: JSON.stringify({ email, verified: false })
                 });
 
-                if (response.ok) {
+                if (dbResponse.ok) {
                     message.innerText = "✅ Thank you! Check your email for verification.";
                     message.classList.add("text-green-600");
                 } else {
-                    const errorData = await response.json();
-                    console.error("Error:", errorData);
-                    message.innerText = "❌ Something went wrong. Try again.";
+                    const errorData = await dbResponse.json();
+                    console.error("Database Error:", errorData);
+                    message.innerText = "❌ Database error. Try again.";
                     message.classList.add("text-red-600");
                 }
             } catch (error) {
