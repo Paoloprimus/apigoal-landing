@@ -19,7 +19,7 @@
             const token = params.get("token");
             const message = document.getElementById("message");
 
-            if (!token || token.trim() === "") {
+            if (!token || token === "") {
                 message.innerText = "❌ Invalid verification link.";
                 message.classList.add("text-red-600");
                 return;
@@ -30,19 +30,14 @@
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
-                        "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlbm5ka2dlZWJvb2lremlraGV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIwMjk0NjUsImV4cCI6MjA1NzYwNTQ2NX0.4_Pnkffn1mPUkHyYfk6bDmdWk2L14LTV5hEEvDaWu8c"
+                        "apikey": "TUO_API_KEY_SUPABASE"
                     },
                     body: JSON.stringify({ token, type: "signup" })
                 });
 
                 if (response.ok) {
-                    message.innerText = "✅ Your email has been verified! Redirecting...";
+                    message.innerText = "✅ Your email has been verified! You can now log in.";
                     message.classList.add("text-green-600");
-
-                    // ⬇️ Manteniamo solo il redirect automatico
-                    setTimeout(() => {
-                        window.location.href = "https://apigoal.com/survey.html";
-                    }, 3000);
                 } else {
                     const errorData = await response.json();
                     console.error("Verification Error:", errorData);
