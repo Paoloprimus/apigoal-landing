@@ -16,50 +16,43 @@
     <script>
         async function verifyEmail() {
             const params = new URLSearchParams(window.location.search);
-            const email = params.get("email");
+            const token = params.get("token");
+            const message = document.getElementById("message");
 
-            if (!email) {
-                document.getElementById("message").innerText = "❌ Invalid verification link.";
-                document.getElementById("message").classList.add("text-red-600");
+            if (!token || token.trim() === "") {
+                message.innerText = "❌ Invalid verification link.";
+                message.classList.add("text-red-600");
                 return;
             }
 
             try {
-                // 🔹 Controlliamo se l'utente è già verificato su Supabase
-                const response = await fetch("https://wenndkgeebooikzikhew.supabase.co/auth/v1/user", {
-                    method: "GET",
+                const response = await fetch("https://wenndkgeebooikzikhew.supabase.co/auth/v1/verify", {
+                    method: "POST",
                     headers: {
                         "Content-Type": "application/json",
-                        "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlbm5ka2dlZWJvb2lremlraGV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIwMjk0NjUsImV4cCI6MjA1NzYwNTQ2NX0.4_Pnkffn1mPUkHyYfk6bDmdWk2L14LTV5hEEvDaWu8c",
-                        "Authorization": `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlbm5ka2dlZWJvb2lremlraGV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIwMjk0NjUsImV4cCI6MjA1NzYwNTQ2NX0.4_Pnkffn1mPUkHyYfk6bDmdWk2L14LTV5hEEvDaWu8c`
-                    }
+                        "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlbm5ka2dlZWJvb2lremlraGV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIwMjk0NjUsImV4cCI6MjA1NzYwNTQ2NX0.4_Pnkffn1mPUkHyYfk6bDmdWk2L14LTV5hEEvDaWu8c"
+                    },
+                    body: JSON.stringify({ token, type: "signup" })
                 });
 
-                if (!response.ok) {
-                    throw new Error("Error checking user verification");
-                }
+                if (response.ok) {
+                    message.innerText = "✅ Your email has been verified! Redirecting...";
+                    message.classList.add("text-green-600");
 
-                const userData = await response.json();
-
-                if (userData.email_confirmed_at) {
-                    // ✅ L'email è confermata
-                    localStorage.setItem("user_email", email);
-                    document.getElementById("message").innerText = "✅ Your email has been verified! Redirecting...";
-                    document.getElementById("message").classList.add("text-green-600");
-
-                    // 🔹 Reindirizza al survey dopo 3 secondi
+                    // Redirect to the main page
                     setTimeout(() => {
-                        window.location.href = "https://apigoal.com/survey.html";
+                        window.location.href = "https://apigoal.com";
                     }, 3000);
                 } else {
-                    document.getElementById("message").innerText = "❌ Email not verified. Try again later.";
-                    document.getElementById("message").classList.add("text-red-600");
+                    const errorData = await response.json();
+                    console.error("Verification Error:", errorData);
+                    message.innerText = `❌ Verification failed: ${errorData.error_description || "Try again later."}`;
+                    message.classList.add("text-red-600");
                 }
-
             } catch (error) {
-                console.error("Verification Error:", error);
-                document.getElementById("message").innerText = "❌ Verification failed. Please try again.";
-                document.getElementById("message").classList.add("text-red-600");
+                console.error("Network Error:", error);
+                message.innerText = "❌ Network error. Try again later.";
+                message.classList.add("text-red-600");
             }
         }
 
