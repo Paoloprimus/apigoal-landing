@@ -16,7 +16,7 @@
     <script>
         async function verifyEmail() {
             const params = new URLSearchParams(window.location.search);
-            const token = params.get("token");
+            const token = params.get("token") || params.get("token_hash");
             const message = document.getElementById("message");
 
             if (!token || token.trim() === "") {
