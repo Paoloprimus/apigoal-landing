@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     .insert([
                         { 
                             email: email,
-                            auth_id: data.user.id,  // Usa l'ID dell'utente autenticato
+                            user_id: data.user.id,  // Usa l'ID dell'utente autenticato
                             created_at: new Date().toISOString()
                         }
                     ]);
