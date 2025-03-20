@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Beta Tester Survey - APIGOAL</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 </head>
 <body class="bg-gradient-to-b from-gray-100 to-gray-300 text-gray-900 flex items-center justify-center min-h-screen">
 
@@ -24,30 +25,29 @@
     </div>
 
     <script>
+        const supabaseUrl = 'https://wenndkgeebooikzikhew.supabase.co'; // Sostituisci con l'URL del tuo progetto Supabase
+        const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlbm5ka2dlZWJvb2lremlraGV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIwMjk0NjUsImV4cCI6MjA1NzYwNTQ2NX0.4_Pnkffn1mPUkHyYfk6bDmdWk2L14LTV5hEEvDaWu8c'; // Sostituisci con la chiave anonima del tuo progetto Supabase
+        const supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
+
         async function checkSurveyStatus() {
-            const email = localStorage.getItem("user_email");
-            if (!email) {
-                console.warn("No user email found in localStorage, redirecting...");
-                window.location.href = "https://apigoal.com"; // Torna alla landing se l'email non è salvata
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) {
+                console.warn("No user logged in, redirecting...");
+                window.location.href = "https://apigoal.com"; // Torna alla landing se l'utente non è loggato
                 return;
             }
 
             try {
-                // 🔹 Controlliamo se l’utente ha già risposto al questionario
-                const response = await fetch(`https://wenndkgeebooikzikhew.supabase.co/rest/v1/beta_survey?email=eq.${email}`, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlbm5ka2dlZWJvb2lremlraGV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIwMjk0NjUsImV4cCI6MjA1NzYwNTQ2NX0.4_Pnkffn1mPUkHyYfk6bDmdWk2L14LTV5hEEvDaWu8c"
-                    }
-                });
+                const { data, error } = await supabase
+                    .from('beta_survey')
+                    .select('*')
+                    .eq('user_id', user.id);
 
-                if (!response.ok) {
-                    console.error("Failed to fetch survey data:", await response.text());
+                if (error) {
+                    console.error("Failed to fetch survey data:", error);
                     return;
                 }
 
-                const data = await response.json();
                 if (data.length > 0) {
                     console.log("User already completed survey, redirecting...");
                     window.location.href = "https://apigoal.com/dashboard"; // Se ha già risposto, va alla dashboard
@@ -60,9 +60,9 @@
         document.getElementById("survey-form").addEventListener("submit", async function(event) {
             event.preventDefault();
 
-            const email = localStorage.getItem("user_email");
-            if (!email) {
-                alert("Error: No email found. Please refresh the page.");
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) {
+                alert("Error: User not logged in. Please refresh the page.");
                 return;
             }
 
@@ -70,24 +70,15 @@
             const concerns = document.getElementById("concerns").value;
 
             try {
-                // 🔹 Salviamo le risposte su Supabase
-                const response = await fetch("https://wenndkgeebooikzikhew.supabase.co/rest/v1/beta_survey", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlbm5ka2dlZWJvb2lremlraGV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIwMjk0NjUsImV4cCI6MjA1NzYwNTQ2NX0.4_Pnkffn1mPUkHyYfk6bDmdWk2L14LTV5hEEvDaWu8c",
-                        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlbm5ka2dlZWJvb2lremlraGV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIwMjk0NjUsImV4cCI6MjA1NzYwNTQ2NX0.4_Pnkffn1mPUkHyYfk6bDmdWk2L14LTV5hEEvDaWu8c"
-                    },
-                    body: JSON.stringify({ email, api_usage: apiUsage, concerns })
-                });
+                const { error } = await supabase
+                    .from('beta_survey')
+                    .insert([{ user_id: user.id, api_usage: apiUsage, concerns: concerns }]);
 
-                if (response.ok) {
-                    // 🔹 Dopo il salvataggio, reindirizziamo alla dashboard
-                    window.location.href = "https://apigoal.com/dashboard";
-                } else {
-                    const errorData = await response.json();
-                    console.error("Survey Error:", errorData);
+                if (error) {
+                    console.error("Survey Error:", error);
                     alert("Error submitting survey. Try again.");
+                } else {
+                    window.location.href = "https://apigoal.com/dashboard";
                 }
             } catch (error) {
                 console.error("Network Error:", error);
@@ -97,6 +88,5 @@
 
         checkSurveyStatus();
     </script>
-
 </body>
 </html>
