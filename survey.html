@@ -27,13 +27,16 @@
     <script>
         const supabaseUrl = 'https://wenndkgeebooikzikhew.supabase.co';
         const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlbm5ka2dlZWJvb2lremlraGV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIwMjk0NjUsImV4cCI6MjA1NzYwNTQ2NX0.4_Pnkffn1mPUkHyYfk6bDmdWk2L14LTV5hEEvDaWu8c';
-        const supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
+        // Corretto: inizializza il client usando l'oggetto supabase dalla libreria importata
+        const client = supabase.createClient(supabaseUrl, supabaseAnonKey);
 
         // Funzione per aggiornare il campo verified nella tabella beta_testers
         async function updateVerificationStatus(userId, email) {
             try {
+                console.log("Attempting to update verification status for:", email);
+                
                 // Aggiorna il record nella tabella beta_testers
-                const { error } = await supabase
+                const { data, error } = await client
                     .from('beta_testers')
                     .update({ verified: true })
                     .eq('email', email);
@@ -43,7 +46,7 @@
                     return false;
                 }
                 
-                console.log("Verification status updated successfully");
+                console.log("Verification status updated successfully:", data);
                 return true;
             } catch (error) {
                 console.error("Error updating verification status:", error);
@@ -52,20 +55,25 @@
         }
 
         async function checkSurveyStatus() {
-            const { data: { user } } = await supabase.auth.getUser();
-            if (!user) {
-                console.warn("No user logged in, redirecting...");
-                window.location.href = "https://apigoal.com"; // Torna alla landing se l'utente non è loggato
-                return;
-            }
-
-            // Aggiorna lo stato di verifica quando l'utente accede a questa pagina
-            if (user.email) {
-                await updateVerificationStatus(user.id, user.email);
-            }
-
             try {
-                const { data, error } = await supabase
+                const { data: { user }, error: authError } = await client.auth.getUser();
+                
+                if (authError || !user) {
+                    console.warn("No user logged in, redirecting...");
+                    window.location.href = "https://apigoal.com"; // Torna alla landing se l'utente non è loggato
+                    return;
+                }
+
+                console.log("User authenticated:", user.id, user.email);
+
+                // Aggiorna lo stato di verifica quando l'utente accede a questa pagina
+                if (user.email) {
+                    console.log("Updating verification status for user:", user.email);
+                    await updateVerificationStatus(user.id, user.email);
+                }
+
+                // Controlla se l'utente ha già completato il sondaggio
+                const { data, error } = await client
                     .from('beta_survey')
                     .select('*')
                     .eq('user_id', user.id);
@@ -84,36 +92,39 @@
             }
         }
 
-        document.getElementById("survey-form").addEventListener("submit", async function(event) {
-            event.preventDefault();
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById("survey-form").addEventListener("submit", async function(event) {
+                event.preventDefault();
 
-            const { data: { user } } = await supabase.auth.getUser();
-            if (!user) {
-                alert("Error: User not logged in. Please refresh the page.");
-                return;
-            }
-
-            const apiUsage = document.getElementById("api_usage").value;
-            const concerns = document.getElementById("concerns").value;
-
-            try {
-                const { error } = await supabase
-                    .from('beta_survey')
-                    .insert([{ user_id: user.id, api_usage: apiUsage, concerns: concerns }]);
-
-                if (error) {
-                    console.error("Survey Error:", error);
-                    alert("Error submitting survey. Try again.");
-                } else {
-                    window.location.href = "https://apigoal.com/dashboard";
+                const { data: { user } } = await client.auth.getUser();
+                if (!user) {
+                    alert("Error: User not logged in. Please refresh the page.");
+                    return;
                 }
-            } catch (error) {
-                console.error("Network Error:", error);
-                alert("Network error. Try again later.");
-            }
-        });
 
-        checkSurveyStatus();
+                const apiUsage = document.getElementById("api_usage").value;
+                const concerns = document.getElementById("concerns").value;
+
+                try {
+                    const { error } = await client
+                        .from('beta_survey')
+                        .insert([{ user_id: user.id, api_usage: apiUsage, concerns: concerns }]);
+
+                    if (error) {
+                        console.error("Survey Error:", error);
+                        alert("Error submitting survey. Try again.");
+                    } else {
+                        window.location.href = "https://apigoal.com/dashboard";
+                    }
+                } catch (error) {
+                    console.error("Network Error:", error);
+                    alert("Network error. Try again later.");
+                }
+            });
+
+            // Avvia il controllo dello stato dopo che il DOM è completamente caricato
+            checkSurveyStatus();
+        });
     </script>
 </body>
 </html>
