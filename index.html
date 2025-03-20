@@ -5,58 +5,67 @@ const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYm
 
 // Usa la versione 2 di Supabase con supporto corretto
 document.addEventListener('DOMContentLoaded', function() {
-    // Accedi correttamente all'oggetto Supabase
-    const client = supabase.createClient(supabaseUrl, supabaseAnonKey);
-    console.log("Client Supabase inizializzato", client);
+  // Verifica se l'utente arriva da un link di conferma email
+  const urlParams = new URLSearchParams(window.location.search);
+  
+  // Se c'è un parametro 'type=signup' nell'URL, significa che l'utente ha appena confermato l'email
+  if (urlParams.get('type') === 'signup' || urlParams.get('type') === 'recovery') {
+    // Reindirizza alla pagina survey
+    window.location.href = '/survey.html';
+  }
+
+  // Accedi correttamente all'oggetto Supabase
+  const client = supabase.createClient(supabaseUrl, supabaseAnonKey);
+  console.log("Client Supabase inizializzato", client);
+  
+  document.getElementById("beta-form").addEventListener("submit", async function(event) {
+    console.log("Evento submit intercettato");
+    event.preventDefault();
+    const email = document.getElementById("email").value;
+    console.log("Email:", email);
+    const message = document.getElementById("message");
     
-    document.getElementById("beta-form").addEventListener("submit", async function(event) {
-        console.log("Evento submit intercettato");
-        event.preventDefault();
-        const email = document.getElementById("email").value;
-        console.log("Email:", email);
-        const message = document.getElementById("message");
-        
-        try {
-            // Registra l'utente su Supabase Auth con options correttamente strutturate
-            const { data, error } = await client.auth.signUp({
-                email: email,
-                password: 'temporary-password',
-                options: {
-                    emailRedirectTo: 'https://apigoal.com/survey.html'
-                }
-            });
-            
-            if (error) {
-                console.log("Errore Supabase:", error);
-                message.innerText = `❌ Something went wrong: ${error.message}`;
-                message.classList.add("text-red-600");
-            } else {
-                console.log("Registrazione completata:", data);
-
-                // Inserisci l'utente nella tabella 'users' del database
-                const { error: insertError } = await client
-                    .from('beta_testers') // Cambia con il nome della tua tabella in Supabase
-                    .insert([
-                        { 
-                            email: email,
-                            user_id: data.user.id,  // Usa l'ID dell'utente autenticato
-                            created_at: new Date().toISOString()
-                        }
-                    ]);
-
-                if (insertError) {
-                    console.log("Errore inserimento in database:", insertError);
-                    message.innerText = `⚠️ Signed up, but database entry failed: ${insertError.message}`;
-                    message.classList.add("text-yellow-600");
-                } else {
-                    message.innerText = "✅ Thank you! Check your email for verification.";
-                    message.classList.add("text-green-600");
-                }
-            }
-        } catch (error) {
-            console.log("Errore catch:", error);
-            message.innerText = "❌ Network error. Try again later.";
-            message.classList.add("text-red-600");
+    try {
+      // Registra l'utente su Supabase Auth con options correttamente strutturate
+      const { data, error } = await client.auth.signUp({
+        email: email,
+        password: 'temporary-password',
+        options: {
+          emailRedirectTo: 'https://apigoal.com/survey.html'
         }
-    });
+      });
+      
+      if (error) {
+        console.log("Errore Supabase:", error);
+        message.innerText = `❌ Something went wrong: ${error.message}`;
+        message.classList.add("text-red-600");
+      } else {
+        console.log("Registrazione completata:", data);
+
+        // Inserisci l'utente nella tabella 'users' del database
+        const { error: insertError } = await client
+          .from('beta_testers') // Cambia con il nome della tua tabella in Supabase
+          .insert([
+            { 
+              email: email,
+              user_id: data.user.id,  // Usa l'ID dell'utente autenticato
+              created_at: new Date().toISOString()
+            }
+          ]);
+
+        if (insertError) {
+          console.log("Errore inserimento in database:", insertError);
+          message.innerText = `⚠️ Signed up, but database entry failed: ${insertError.message}`;
+          message.classList.add("text-yellow-600");
+        } else {
+          message.innerText = "✅ Thank you! Check your email for verification.";
+          message.classList.add("text-green-600");
+        }
+      }
+    } catch (error) {
+      console.log("Errore catch:", error);
+      message.innerText = "❌ Network error. Try again later.";
+      message.classList.add("text-red-600");
+    }
+  });
 });
