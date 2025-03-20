@@ -33,8 +33,7 @@ const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYm
 // Usa la versione 2 di Supabase con supporto corretto
 document.addEventListener('DOMContentLoaded', function() {
     // Accedi correttamente all'oggetto Supabase
-    const { createClient } = supabase;
-    const client = createClient(supabaseUrl, supabaseAnonKey);
+    const client = supabase.createClient(supabaseUrl, supabaseAnonKey);
     console.log("Client Supabase inizializzato", client);
     
     document.getElementById("beta-form").addEventListener("submit", async function(event) {
