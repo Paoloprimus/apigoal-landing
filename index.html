@@ -25,17 +25,21 @@
     </div>
 
     <script>
+        console.log("Inizio script"); // Verifica l'inizio dello script
+
         const supabaseUrl = 'https://wenndkgeebooikzikhew.supabase.co'; // Sostituisci con l'URL del tuo progetto Supabase
         const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlbm5ka2dlZWJvb2lremlraGV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIwMjk0NjUsImV4cCI6MjA1NzYwNTQ2NX0.4_Pnkffn1mPUkHyYfk6bDmdWk2L14LTV5hEEvDaWu8c'; // Sostituisci con la chiave anonima del tuo progetto Supabase
         const supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
 
-        console.log(supabase); // Verifica l'oggetto Supabase
+        console.log("Client Supabase inizializzato", supabase); // Verifica l'oggetto Supabase
 
         document.getElementById("beta-form").addEventListener("submit", async function(event) {
+            console.log("Evento submit intercettato"); // Verifica l'evento submit
+
             event.preventDefault();
 
             const email = document.getElementById("email").value;
-            console.log(email); // Verifica l'email
+            console.log("Email:", email); // Verifica l'email
 
             const message = document.getElementById("message");
 
@@ -46,6 +50,7 @@
                 });
 
                 if (error) {
+                    console.log("Errore Supabase:", error); // Verifica l'errore Supabase
                     message.innerText = `❌ Something went wrong: ${error.message}`;
                     message.classList.add("text-red-600");
                 } else {
@@ -53,7 +58,7 @@
                     message.classList.add("text-green-600");
                 }
             } catch (error) {
-                console.log(error); // Verifica l'errore
+                console.log("Errore catch:", error); // Verifica l'errore catch
                 message.innerText = "❌ Network error. Try again later.";
                 message.classList.add("text-red-600");
             }
