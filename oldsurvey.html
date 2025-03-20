@@ -1,0 +1,93 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beta Tester Survey - APIGOAL</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+</head>
+<body class="bg-gradient-to-b from-gray-100 to-gray-300 text-gray-900 flex items-center justify-center min-h-screen">
+
+    <div class="bg-white shadow-xl rounded-lg p-8 max-w-md w-full text-center">
+        <h1 class="text-2xl font-bold mb-4">🎯 APIGOAL Beta Survey</h1>
+        <p id="message" class="text-gray-600">Please take a moment to answer a few questions.</p>
+
+        <form id="survey-form" class="mt-4">
+            <label class="block text-left font-semibold">Which AI APIs do you use?</label>
+            <input type="text" id="api_usage" class="w-full p-2 border rounded-lg mt-1 mb-4" placeholder="e.g., OpenAI, Anthropic, Hugging Face" required>
+
+            <label class="block text-left font-semibold">What are your biggest concerns about AI API usage?</label>
+            <textarea id="concerns" class="w-full p-2 border rounded-lg mt-1 mb-4" placeholder="Write your answer here..." required></textarea>
+
+            <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">Submit</button>
+        </form>
+    </div>
+
+    <script>
+        const supabaseUrl = 'https://wenndkgeebooikzikhew.supabase.co'; // Sostituisci con l'URL del tuo progetto Supabase
+        const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlbm5ka2dlZWJvb2lremlraGV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIwMjk0NjUsImV4cCI6MjA1NzYwNTQ2NX0.4_Pnkffn1mPUkHyYfk6bDmdWk2L14LTV5hEEvDaWu8c'; // Sostituisci con la chiave anonima del tuo progetto Supabase
+        const supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
+
+        async function checkSurveyStatus() {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) {
+                console.warn("No user logged in, redirecting...");
+                window.location.href = "https://apigoal.com"; // Torna alla landing se l'utente non è loggato
+                return;
+            }
+
+            try {
+                const { data, error } = await supabase
+                    .from('beta_survey')
+                    .select('*')
+                    .eq('user_id', user.id);
+
+                if (error) {
+                    console.error("Failed to fetch survey data:", error);
+                    return;
+                }
+
+                if (data.length > 0) {
+                    console.log("User already completed survey, redirecting...");
+                    window.location.href = "https://apigoal.com/dashboard"; // Se ha già risposto, va alla dashboard
+                }
+            } catch (error) {
+                console.error("Survey Check Error:", error);
+            }
+        }
+
+        document.getElementById("survey-form").addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) {
+                alert("Error: User not logged in. Please refresh the page.");
+                return;
+            }
+
+            const apiUsage = document.getElementById("api_usage").value;
+            const concerns = document.getElementById("concerns").value;
+
+            try {
+                const { error } = await supabase
+                    .from('beta_survey')
+                    .insert([{ user_id: user.id, api_usage: apiUsage, concerns: concerns }]);
+
+                if (error) {
+                    console.error("Survey Error:", error);
+                    alert("Error submitting survey. Try again.");
+                } else {
+                    window.location.href = "https://apigoal.com/dashboard";
+                }
+            } catch (error) {
+                console.error("Network Error:", error);
+                alert("Network error. Try again later.");
+            }
+        });
+
+        checkSurveyStatus();
+    </script>
+</body>
+</html>
