@@ -25,71 +25,47 @@
     </div>
 
     <script>
-    // Script Supabase corretto per moduli ES
-    console.log("Inizio script");
-    const supabaseUrl = 'https://wenndkgeebooikzikhew.supabase.co';
-    const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlbm5ka2dlZWJvb2lremlraGV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIwMjk0NjUsImV4cCI6MjA1NzYwNTQ2NX0.4_Pnkffn1mPUkHyYfk6bDmdWk2L14LTV5hEEvDaWu8c';
+// Script Supabase corretto per moduli ES
+console.log("Inizio script");
+const supabaseUrl = 'https://wenndkgeebooikzikhew.supabase.co';
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlbm5ka2dlZWJvb2lremlraGV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIwMjk0NjUsImV4cCI6MjA1NzYwNTQ2NX0.4_Pnkffn1mPUkHyYfk6bDmdWk2L14LTV5hEEvDaWu8c';
 
-    // Usa la versione 2 di Supabase con supporto corretto
-    document.addEventListener('DOMContentLoaded', function() {
-        // Accedi correttamente all'oggetto Supabase
-        const { createClient } = supabase;
-        const client = createClient(supabaseUrl, supabaseAnonKey);
-        console.log("Client Supabase inizializzato", client);
-
-        // Modificare la parte della registrazione 
-        document.getElementById("beta-form").addEventListener("submit", async function(event) {
-            console.log("Evento submit intercettato");
-            event.preventDefault();
-            const email = document.getElementById("email").value;
-            console.log("Email:", email);
-            const message = document.getElementById("message");
+// Usa la versione 2 di Supabase con supporto corretto
+document.addEventListener('DOMContentLoaded', function() {
+    // Accedi correttamente all'oggetto Supabase
+    const { createClient } = supabase;
+    const client = createClient(supabaseUrl, supabaseAnonKey);
+    console.log("Client Supabase inizializzato", client);
+    
+    document.getElementById("beta-form").addEventListener("submit", async function(event) {
+        console.log("Evento submit intercettato");
+        event.preventDefault();
+        const email = document.getElementById("email").value;
+        console.log("Email:", email);
+        const message = document.getElementById("message");
+        
+        try {
+            // Usa il client correttamente
+            const { data, error } = await client.auth.signUp({
+                email: email,
+                password: 'temporary-password'
+            });
             
-            try {
-
-                const { data, error } = await client.auth.signUp({
-                    email: email,
-                    password: 'temporary-password',
-                    options: {
-                        emailRedirectTo: 'https://apigoal.com/survey.html'
-                    }
-                });
-
-                if (error) {
-                    console.log("Errore Supabase:", error);
-                    message.innerText = `❌ Something went wrong: ${error.message}`;
-                    message.classList.add("text-red-600");
-
-                    return;
-                }
-                
-                // Se la registrazione è avvenuta con successo, inserisci i dati nella tabella
-                // Sostituisci 'users' con il nome della tua tabella
-                const { error: insertError } = await client
-                    .from('users')  // Cambia con il nome della tua tabella
-                    .insert([
-                        { 
-                            email: email,
-                            auth_id: data.user.id,  // Riferimento all'ID di autenticazione
-                            created_at: new Date().toISOString()
-                        }
-                    ]);
-                    
-                if (insertError) {
-                    console.log("Errore inserimento in database:", insertError);
-                    // Anche se c'è un errore di inserimento, l'utente è comunque registrato
-                }
-                
+            if (error) {
+                console.log("Errore Supabase:", error);
+                message.innerText = `❌ Something went wrong: ${error.message}`;
+                message.classList.add("text-red-600");
+            } else {
+                console.log("Registrazione completata:", data);
                 message.innerText = "✅ Thank you! Check your email for verification.";
                 message.classList.add("text-green-600");
-                
-            } catch (error) {
-                console.log("Errore catch:", error);
-                message.innerText = "❌ Network error. Try again later.";
-                message.classList.add("text-red-600");
             }
-        });
-    }); // Chiusura dell'addEventListener
-    </script>
+        } catch (error) {
+            console.log("Errore catch:", error);
+            message.innerText = "❌ Network error. Try again later.";
+            message.classList.add("text-red-600");
+        }
+    });
+});    </script>
 </body>
 </html>
