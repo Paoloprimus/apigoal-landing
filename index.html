@@ -28,7 +28,7 @@
     // Script Supabase corretto per moduli ES
     console.log("Inizio script");
     const supabaseUrl = 'https://wenndkgeebooikzikhew.supabase.co';
-    const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlbm5ka2dlZWJvb2lremlraGV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIwMjk0NjUsImV4cCI6MjA1NzYwNTQ2NX0.4_Pnkffn1mPUkHyYfk6bDmdWk2L14LTV5hEEvDaWu8c';
+    const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlbm5ka2dlZWJvb2lremlraGV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIwMjk0NjUsImV4cCI6MjA1NzYwNTQ2NX0.4_Pnkffn1mPUkHyYfk6bDmdWk2L14LTV5hEEvDaWu8c';
 
     // Usa la versione 2 di Supabase con supporto corretto
     document.addEventListener('DOMContentLoaded', function() {
@@ -55,10 +55,11 @@
                     }
                 });
 
-                if (authError) {
-                    console.log("Errore Supabase:", authError);
-                    message.innerText = `❌ Something went wrong: ${authError.message}`;
+                if (error) {
+                    console.log("Errore Supabase:", error);
+                    message.innerText = `❌ Something went wrong: ${error.message}`;
                     message.classList.add("text-red-600");
+
                     return;
                 }
                 
@@ -69,7 +70,7 @@
                     .insert([
                         { 
                             email: email,
-                            auth_id: authData.user.id,  // Riferimento all'ID di autenticazione
+                            auth_id: data.user.id,  // Riferimento all'ID di autenticazione
                             created_at: new Date().toISOString()
                         }
                     ]);
@@ -88,7 +89,7 @@
                 message.classList.add("text-red-600");
             }
         });
-        
+    }); // Chiusura dell'addEventListener
     </script>
 </body>
 </html>
