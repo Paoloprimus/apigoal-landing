@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const message = document.getElementById("message");
         
         try {
-            // Usa il client correttamente
+            // Registra l'utente su Supabase Auth
             const { data, error } = await client.auth.signUp({
                 email: email,
                 password: 'temporary-password'
@@ -56,8 +56,26 @@ document.addEventListener('DOMContentLoaded', function() {
                 message.classList.add("text-red-600");
             } else {
                 console.log("Registrazione completata:", data);
-                message.innerText = "✅ Thank you! Check your email for verification.";
-                message.classList.add("text-green-600");
+
+                // Inserisci l'utente nella tabella 'users' del database
+                const { error: insertError } = await client
+                    .from('users') // Cambia con il nome della tua tabella in Supabase
+                    .insert([
+                        { 
+                            email: email,
+                            auth_id: data.user.id,  // Usa l'ID dell'utente autenticato
+                            created_at: new Date().toISOString()
+                        }
+                    ]);
+
+                if (insertError) {
+                    console.log("Errore inserimento in database:", insertError);
+                    message.innerText = `⚠️ Signed up, but database entry failed: ${insertError.message}`;
+                    message.classList.add("text-yellow-600");
+                } else {
+                    message.innerText = "✅ Thank you! Check your email for verification.";
+                    message.classList.add("text-green-600");
+                }
             }
         } catch (error) {
             console.log("Errore catch:", error);
@@ -65,6 +83,7 @@ document.addEventListener('DOMContentLoaded', function() {
             message.classList.add("text-red-600");
         }
     });
-});    </script>
+});
+    </script>
 </body>
 </html>
