@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 // Inserisci l'utente nella tabella 'users' del database
                 const { error: insertError } = await client
-                    .from('users') // Cambia con il nome della tua tabella in Supabase
+                    .from('beta_testers') // Cambia con il nome della tua tabella in Supabase
                     .insert([
                         { 
                             email: email,
