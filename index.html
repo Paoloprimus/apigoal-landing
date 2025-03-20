@@ -60,25 +60,9 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 console.log("Registrazione completata:", data);
 
-                // Inserisci l'utente nella tabella 'users' del database
-                const { error: insertError } = await client
-                    .from('beta_testers') // Cambia con il nome della tua tabella in Supabase
-                    .insert([
-                        { 
-                            email: email,
-                            user_id: data.user.id,  // Usa l'ID dell'utente autenticato
-                            created_at: new Date().toISOString()
-                        }
-                    ]);
-
-                if (insertError) {
-                    console.log("Errore inserimento in database:", insertError);
-                    message.innerText = `⚠️ Signed up, but database entry failed: ${insertError.message}`;
-                    message.classList.add("text-yellow-600");
-                } else {
-                    message.innerText = "✅ Thank you! Check your email for verification.";
-                    message.classList.add("text-green-600");
-                }
+                // Mostra messaggio di successo
+                message.innerText = "✅ Thank you! Check your email for verification.";
+                message.classList.add("text-green-600");
             }
         } catch (error) {
             console.log("Errore catch:", error);
