@@ -25,15 +25,18 @@
     </div>
 
     <script>
-        // Inizializza il client Supabase prima di qualsiasi altro codice
         const supabaseUrl = 'https://wenndkgeebooikzikhew.supabase.co'; // Sostituisci con l'URL del tuo progetto Supabase
         const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlbm5ka2dlZWJvb2lremlraGV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIwMjk0NjUsImV4cCI6MjA1NzYwNTQ2NX0.4_Pnkffn1mPUkHyYfk6bDmdWk2L14LTV5hEEvDaWu8c'; // Sostituisci con la chiave anonima del tuo progetto Supabase
         const supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
+
+        console.log(supabase); // Verifica l'oggetto Supabase
 
         document.getElementById("beta-form").addEventListener("submit", async function(event) {
             event.preventDefault();
 
             const email = document.getElementById("email").value;
+            console.log(email); // Verifica l'email
+
             const message = document.getElementById("message");
 
             try {
@@ -50,6 +53,7 @@
                     message.classList.add("text-green-600");
                 }
             } catch (error) {
+                console.log(error); // Verifica l'errore
                 message.innerText = "❌ Network error. Try again later.";
                 message.classList.add("text-red-600");
             }
