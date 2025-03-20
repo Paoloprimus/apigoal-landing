@@ -47,15 +47,23 @@
             
             try {
                 // Registra l'utente in auth
-                const { data: authData, error: authError } = await client.auth.signUp({
+                // const { data: authData, error: authError } = await client.auth.signUp({
+                //    email: email,
+                //    password: 'temporary-password',
+                //    options: {
+                //        // Imposta l'URL di redirect
+                //        emailRedirectTo: 'https://apigoal.com/survey.html'
+                //    }
+                //});
+
+                const { data, error } = await client.auth.signUp({
                     email: email,
                     password: 'temporary-password',
                     options: {
-                        // Imposta l'URL di redirect
                         emailRedirectTo: 'https://apigoal.com/survey.html'
                     }
                 });
-                
+
                 if (authError) {
                     console.log("Errore Supabase:", authError);
                     message.innerText = `❌ Something went wrong: ${authError.message}`;
