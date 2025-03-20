@@ -29,7 +29,9 @@
 
         const supabaseUrl = 'https://wenndkgeebooikzikhew.supabase.co'; // Sostituisci con l'URL del tuo progetto Supabase
         const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlbm5ka2dlZWJvb2lremlraGV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIwMjk0NjUsImV4cCI6MjA1NzYwNTQ2NX0.4_Pnkffn1mPUkHyYfk6bDmdWk2L14LTV5hEEvDaWu8c'; // Sostituisci con la chiave anonima del tuo progetto Supabase
-        const supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
+        // const supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
+        // Usa il nome corretto dell'oggetto globale
+        const supabaseClient = supabase.createClient(supabaseUrl, supabaseAnonKey);
 
         console.log("Client Supabase inizializzato", supabase); // Verifica l'oggetto Supabase
 
