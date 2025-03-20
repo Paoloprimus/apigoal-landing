@@ -25,9 +25,31 @@
     </div>
 
     <script>
-        const supabaseUrl = 'https://wenndkgeebooikzikhew.supabase.co'; // Sostituisci con l'URL del tuo progetto Supabase
-        const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlbm5ka2dlZWJvb2lremlraGV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIwMjk0NjUsImV4cCI6MjA1NzYwNTQ2NX0.4_Pnkffn1mPUkHyYfk6bDmdWk2L14LTV5hEEvDaWu8c'; // Sostituisci con la chiave anonima del tuo progetto Supabase
+        const supabaseUrl = 'https://wenndkgeebooikzikhew.supabase.co';
+        const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlbm5ka2dlZWJvb2lremlraGV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIwMjk0NjUsImV4cCI6MjA1NzYwNTQ2NX0.4_Pnkffn1mPUkHyYfk6bDmdWk2L14LTV5hEEvDaWu8c';
         const supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
+
+        // Funzione per aggiornare il campo verified nella tabella beta_testers
+        async function updateVerificationStatus(userId, email) {
+            try {
+                // Aggiorna il record nella tabella beta_testers
+                const { error } = await supabase
+                    .from('beta_testers')
+                    .update({ verified: true })
+                    .eq('email', email);
+                
+                if (error) {
+                    console.error("Failed to update verification status:", error);
+                    return false;
+                }
+                
+                console.log("Verification status updated successfully");
+                return true;
+            } catch (error) {
+                console.error("Error updating verification status:", error);
+                return false;
+            }
+        }
 
         async function checkSurveyStatus() {
             const { data: { user } } = await supabase.auth.getUser();
@@ -35,6 +57,11 @@
                 console.warn("No user logged in, redirecting...");
                 window.location.href = "https://apigoal.com"; // Torna alla landing se l'utente non è loggato
                 return;
+            }
+
+            // Aggiorna lo stato di verifica quando l'utente accede a questa pagina
+            if (user.email) {
+                await updateVerificationStatus(user.id, user.email);
             }
 
             try {
