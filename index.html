@@ -48,9 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const { data, error } = await client.auth.signUp({
                 email: email,
                 password: 'temporary-password'
-                 options: {
-                    emailRedirectTo: 'https://apigoal.com/survey.html'  // <-- QUI!
-                }
+                emailRedirectTo: 'https://apigoal.com/survey.html'  // <-- NUOVO POSTO
             });
             
             if (error) {
