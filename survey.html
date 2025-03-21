@@ -326,6 +326,9 @@ document.addEventListener("DOMContentLoaded", async function() {
         const rankCostMonitoring = document.querySelector('input[name="rank_cost_monitoring"]:checked')?.value || null;
         const rankEfficiencySecurity = document.querySelector('input[name="rank_efficiency_security"]:checked')?.value || null;
 
+	// Recupero il valore del budget
+	const budget = document.querySelector('input[name="budget"]:checked')?.value || null;
+
         // Opzioni aggiuntive
         const dashboardOption = document.querySelector('input[name="dashboard_option"]:checked')?.value || null;
         const usageOption = document.querySelector('input[name="usage_option"]:checked')?.value || null;
@@ -346,6 +349,12 @@ document.addEventListener("DOMContentLoaded", async function() {
             return;
         }
 
+	// Controlla se il budget è selezionato
+	if (!budget) {
+    	    alert("⚠️ Please select your monthly AI API budget.");
+            return;
+	}
+	    
         try {
             const { error } = await supabaseClient
                 .from('beta_survey')
@@ -359,6 +368,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                     usage_option: usageOption,
                     custom_request: customRequest,
                     providers: selectedProviders
+		    budget: budget // <-- Assicuriamoci che venga inviato
                 }]);
 
             if (error) {
