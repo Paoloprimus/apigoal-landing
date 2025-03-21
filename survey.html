@@ -85,27 +85,57 @@
     </div>
 
     <script>
+        // Inizializza Supabase PRIMA di qualsiasi utilizzo
         const supabaseUrl = 'https://wenndkgeebooikzikhew.supabase.co';
         const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlbm5ka2dlZWJvb2lremlraGV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIwMjk0NjUsImV4cCI6MjA1NzYwNTQ2NX0.4_Pnkffn1mPUkHyYfk6bDmdWk2L14LTV5hEEvDaWu8c';
         const supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
-
+    
+        async function checkSurveyStatus() {
+            const { data: { user }, error } = await supabase.auth.getUser();
+            
+            if (!user) {
+                console.warn("No user logged in, redirecting...");
+                window.location.href = "https://apigoal.com"; 
+                return;
+            }
+    
+            try {
+                const { data, error } = await supabase
+                    .from('beta_survey')
+                    .select('*')
+                    .eq('user_id', user.id);
+    
+                if (error) {
+                    console.error("Failed to fetch survey data:", error);
+                    return;
+                }
+    
+                if (data.length > 0) {
+                    console.log("User already completed survey, redirecting...");
+                    window.location.href = "https://apigoal.com/beta_dashboard";
+                }
+            } catch (error) {
+                console.error("Survey Check Error:", error);
+            }
+        }
+    
+        document.addEventListener("DOMContentLoaded", checkSurveyStatus);
+    
         document.getElementById("survey-form").addEventListener("submit", async function(event) {
             event.preventDefault();
-
-            const { data: { user } } = await supabase.auth.getUser();
+    
+            const { data: { user }, error } = await supabase.auth.getUser();
             if (!user) {
                 alert("Error: User not logged in. Please refresh the page.");
                 return;
             }
-
-            // Raccolta dati dal form
+    
             const features = Array.from(document.querySelectorAll('input[name="features"]:checked'))
                                  .map(input => input.value);
             const dashboardOption = document.querySelector('input[name="dashboard_option"]:checked')?.value || null;
             const usageOption = document.querySelector('input[name="usage_option"]:checked')?.value || null;
             const customRequest = document.getElementById("custom_request").value.trim();
-
-            // Inserimento dati in Supabase
+    
             try {
                 const { error } = await supabase
                     .from('beta_survey')
@@ -116,12 +146,12 @@
                         usage_option: usageOption,
                         custom_request: customRequest
                     }]);
-
+    
                 if (error) {
                     console.error("Survey Error:", error);
                     alert("Error submitting survey. Try again.");
                 } else {
-                    window.location.href = "https://apigoal.com/beta_dashboard"; // Redirect
+                    window.location.href = "https://apigoal.com/beta_dashboard";
                 }
             } catch (error) {
                 console.error("Network Error:", error);
@@ -129,6 +159,7 @@
             }
         });
     </script>
+
 
 </body>
 </html>
