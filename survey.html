@@ -253,149 +253,129 @@
     </div>
 
 <script>
-document.getElementById('survey-form').addEventListener('submit', function (e) {
-    const requiredGroups = [
-        'rank_auto_switch',
-        'rank_cost_comparison',
-        'rank_cost_monitoring',
-        'rank_efficiency_security'
-    ];
+document.addEventListener("DOMContentLoaded", async function() {
+    console.log("📌 Document loaded. Initializing Supabase...");
 
-    for (let group of requiredGroups) {
-        const selected = document.querySelector(`input[name="${group}"]:checked`);
-        if (!selected) {
-            alert("Please rank all four features before submitting.");
-            e.preventDefault();
-            return;
+    if (typeof supabase === 'undefined') {
+        console.error("❌ Supabase library not loaded.");
+        return;
+    }
+
+    const supabaseUrl = 'https://wenndkgeebooikzikhew.supabase.co';
+    const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlbm5ka2dlZWJvb2lremlraGV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIwMjk0NjUsImV4cCI6MjA1NzYwNTQ2NX0.4_Pnkffn1mPUkHyYfk6bDmdWk2L14LTV5hEEvDaWu8c';
+
+    const supabaseClient = supabase.createClient(supabaseUrl, supabaseAnonKey);
+    console.log("✅ Supabase client initialized:", supabaseClient);
+
+    async function checkSurveyStatus() {
+        try {
+            console.log("🔍 Checking user authentication...");
+            const { data: { user }, error } = await supabaseClient.auth.getUser();
+
+            if (error) {
+                console.error("⚠️ Error retrieving user:", error);
+                return;
+            }
+
+            if (!user) {
+                console.warn("🚫 No user logged in, staying on survey page.");
+                return;  // NON REDIRECTARE, così vediamo se il problema è qui
+            }
+
+            console.log("✅ User found:", user);
+
+            const { data, error: surveyError } = await supabaseClient
+                .from('beta_survey')
+                .select('*')
+                .eq('user_id', user.id);
+
+            if (surveyError) {
+                console.error("⚠️ Failed to fetch survey data:", surveyError);
+                return;
+            }
+
+            console.log("📊 Survey data:", data);
+
+            if (data.length > 0) {
+                console.log("🔄 User already completed survey, redirecting...");
+                window.location.href = "https://apigoal.com/beta_dashboard";
+            }
+        } catch (error) {
+            console.error("❌ Survey Check Error:", error);
         }
     }
+
+    await checkSurveyStatus();
+
+    document.getElementById("survey-form").addEventListener("submit", async function(event) {
+        event.preventDefault();
+
+        console.log("📝 Submitting survey...");
+
+        const { data: { user }, error } = await supabaseClient.auth.getUser();
+        if (!user) {
+            alert("Error: User not logged in. Please refresh the page.");
+            return;
+        }
+
+        console.log("✅ User found for survey submission:", user);
+
+        // Legge i dati dai radio button
+        const rankAutoSwitch = document.querySelector('input[name="rank_auto_switch"]:checked')?.value || null;
+        const rankCostComparison = document.querySelector('input[name="rank_cost_comparison"]:checked')?.value || null;
+        const rankCostMonitoring = document.querySelector('input[name="rank_cost_monitoring"]:checked')?.value || null;
+        const rankEfficiencySecurity = document.querySelector('input[name="rank_efficiency_security"]:checked')?.value || null;
+
+        // Opzioni aggiuntive
+        const dashboardOption = document.querySelector('input[name="dashboard_option"]:checked')?.value || null;
+        const usageOption = document.querySelector('input[name="usage_option"]:checked')?.value || null;
+        const customRequest = document.getElementById("custom_request").value.trim();
+
+        // Controlla se almeno una checkbox è selezionata
+        const selectedProviders = Array.from(document.querySelectorAll('input[name="providers"]:checked'))
+                                      .map(input => input.value);
+
+        if (selectedProviders.length === 0) {
+            alert("⚠️ Please select at least one AI API provider.");
+            return;
+        }
+
+        // Verifica se i dati richiesti sono tutti presenti
+        if (!rankAutoSwitch || !rankCostComparison || !rankCostMonitoring || !rankEfficiencySecurity) {
+            alert("⚠️ Please rank all features before submitting.");
+            return;
+        }
+
+        try {
+            const { error } = await supabaseClient
+                .from('beta_survey')
+                .insert([{
+                    user_id: user.id,
+                    rank_auto_switch: rankAutoSwitch,
+                    rank_cost_comparison: rankCostComparison,
+                    rank_cost_monitoring: rankCostMonitoring,
+                    rank_efficiency_security: rankEfficiencySecurity,
+                    dashboard_option: dashboardOption,
+                    usage_option: usageOption,
+                    custom_request: customRequest,
+                    providers: selectedProviders
+                }]);
+
+            if (error) {
+                console.error("❌ Survey Error:", error);
+                alert("Error submitting survey. Try again.");
+            } else {
+                console.log("🎉 Survey submitted successfully!");
+                window.location.href = "https://apigoal.com/beta_dashboard";
+            }
+        } catch (error) {
+            console.error("❌ Network Error:", error);
+            alert("Network error. Try again later.");
+        }
+    });
 });
 </script>
 
-
-    <script>
-        document.addEventListener("DOMContentLoaded", async function() {
-            console.log("📌 Document loaded. Initializing Supabase...");
-    
-            if (typeof supabase === 'undefined') {
-                console.error("❌ Supabase library not loaded.");
-                return;
-            }
-    
-            const supabaseUrl = 'https://wenndkgeebooikzikhew.supabase.co';
-            const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlbm5ka2dlZWJvb2lremlraGV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIwMjk0NjUsImV4cCI6MjA1NzYwNTQ2NX0.4_Pnkffn1mPUkHyYfk6bDmdWk2L14LTV5hEEvDaWu8c';
-    
-            const supabaseClient = supabase.createClient(supabaseUrl, supabaseAnonKey);
-            console.log("✅ Supabase client initialized:", supabaseClient);
-    
-            async function checkSurveyStatus() {
-                try {
-                    console.log("🔍 Checking user authentication...");
-                    const { data: { user }, error } = await supabaseClient.auth.getUser();
-    
-                    if (error) {
-                        console.error("⚠️ Error retrieving user:", error);
-                        return;
-                    }
-    
-                    if (!user) {
-                        console.warn("🚫 No user logged in, staying on survey page.");
-                        return;  // NON REDIRECTARE, così vediamo se il problema è qui
-                    }
-    
-                    console.log("✅ User found:", user);
-    
-                    const { data, error: surveyError } = await supabaseClient
-                        .from('beta_survey')
-                        .select('*')
-                        .eq('user_id', user.id);
-    
-                    if (surveyError) {
-                        console.error("⚠️ Failed to fetch survey data:", surveyError);
-                        return;
-                    }
-    
-                    console.log("📊 Survey data:", data);
-    
-                    if (data.length > 0) {
-                        console.log("🔄 User already completed survey, redirecting...");
-                        window.location.href = "https://apigoal.com/beta_dashboard";
-                    }
-                } catch (error) {
-                    console.error("❌ Survey Check Error:", error);
-                }
-            }
-    
-            await checkSurveyStatus();
-    
-            document.getElementById("survey-form").addEventListener("submit", async function(event) {
-                event.preventDefault();
-    
-                console.log("📝 Submitting survey...");
-    
-                const { data: { user }, error } = await supabaseClient.auth.getUser();
-                if (!user) {
-                    alert("Error: User not logged in. Please refresh the page.");
-                    return;
-                }
-    
-	document.getElementById("survey-form").addEventListener("submit", async function(event) {
-	    event.preventDefault();
-	
-	    console.log("📝 Submitting survey...");
-	
-	    const { data: { user }, error } = await supabaseClient.auth.getUser();
-	    if (!user) {
-	        alert("Error: User not logged in. Please refresh the page.");
-	        return;
-	    }
-	
-	    console.log("✅ User found for survey submission:", user);
-	
-	    // Legge i dati dai radio button
-	    const rankAutoSwitch = document.querySelector('input[name="rank_auto_switch"]:checked')?.value || null;
-	    const rankCostComparison = document.querySelector('input[name="rank_cost_comparison"]:checked')?.value || null;
-	    const rankCostMonitoring = document.querySelector('input[name="rank_cost_monitoring"]:checked')?.value || null;
-	    const rankEfficiencySecurity = document.querySelector('input[name="rank_efficiency_security"]:checked')?.value || null;
-	    
-	    // Opzioni aggiuntive
-	    const dashboardOption = document.querySelector('input[name="dashboard_option"]:checked')?.value || null;
-	    const usageOption = document.querySelector('input[name="usage_option"]:checked')?.value || null;
-	    const customRequest = document.getElementById("custom_request").value.trim();
-	
-	    // Verifica se i dati richiesti sono tutti presenti
-	    if (!rankAutoSwitch || !rankCostComparison || !rankCostMonitoring || !rankEfficiencySecurity) {
-	        alert("⚠️ Please rank all features before submitting.");
-	        return;
-	    }
-	
-	    try {
-	        const { error } = await supabaseClient
-	            .from('beta_survey')
-	            .insert([{
-	                user_id: user.id,
-	                rank_auto_switch: rankAutoSwitch,
-	                rank_cost_comparison: rankCostComparison,
-	                rank_cost_monitoring: rankCostMonitoring,
-	                rank_efficiency_security: rankEfficiencySecurity,
-	                dashboard_option: dashboardOption,
-	                usage_option: usageOption,
-	                custom_request: customRequest
-	            }]);
-	
-	        if (error) {
-	            console.error("❌ Survey Error:", error);
-	            alert("Error submitting survey. Try again.");
-	        } else {
-	            console.log("🎉 Survey submitted successfully!");
-	            window.location.href = "https://apigoal.com/beta_dashboard";
-	        }
-	    } catch (error) {
-	        console.error("❌ Network Error:", error);
-	        alert("Network error. Try again later.");
-	    }
-	});
-    </script>
 
 </body>
 </html>
