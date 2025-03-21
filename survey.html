@@ -328,6 +328,7 @@ document.addEventListener("DOMContentLoaded", async function() {
 
 	// Recupero il valore del budget
 	const budget = document.querySelector('input[name="budget"]:checked')?.value || null;
+	console.log("🔍 Budget Type:", typeof budget, "Value:", budget);
 
         // Opzioni aggiuntive
         const dashboardOption = document.querySelector('input[name="dashboard_option"]:checked')?.value || null;
