@@ -3,50 +3,217 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome in APIGOAL!</title>
+    <title>Welcome to APIGOAL!</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 </head>
 <body class="bg-gradient-to-b from-gray-100 to-gray-300 text-gray-900 flex items-center justify-center min-h-screen">
 
     <div class="bg-white shadow-xl rounded-lg p-8 max-w-md w-full text-center">
-        <h1 class="text-2xl font-bold mb-2">🎯 WELCOME IN APIGOAL!</h1>
-        <p class="text-sm text-gray-600 mb-6">
-            APIGOAL is a SaaS project for AI developers and startups, focusing on AI API cost monitoring and optimization.  
-            Help us tailor the service by filling out this short survey. Thank you!
-        </p>
+        <h1 class="text-2xl font-bold mb-2">🎯 WELCOME TO APIGOAL!</h1>
+        
+		<!-- Larger green intro box with icon -->
+        <div class="bg-green-50 p-4 rounded-lg mb-6 border border-green-200">
+            <p class="text-base text-green-700 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                Please complete this survey to join us. All beta program details in the dashboard after submission. Thank you!
+            </p>
+            <p class="text-sm text-green-600 mt-2">
+
+            </p>
+        </div>
 
         <form id="survey-form" class="mt-4 text-left">
-            <!-- Prima domanda -->
+            <!-- First question - Ranking system with radio buttons -->
             <label class="block text-lg font-semibold mb-2">
-                Rank the importance of the following features under development:
+                Qualify the importance of the following features (1=high priority, 4=low priority):
+            </label>
+            
+            <!-- Auto Switch -->
+            <div class="mb-4 p-2 bg-gray-50 rounded">
+                <p class="mb-1 font-medium">Automatic switching to the most cost-effective AI APIs</p>
+                <div class="flex flex-wrap gap-4 sm:gap-6">
+                    <label class="flex items-center">
+                        <input type="radio" name="rank_auto_switch" value="1" class="mr-1" required>
+                        <span>1</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="radio" name="rank_auto_switch" value="2" class="mr-1">
+                        <span>2</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="radio" name="rank_auto_switch" value="3" class="mr-1">
+                        <span>3</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="radio" name="rank_auto_switch" value="4" class="mr-1">
+                        <span>4</span>
+                    </label>
+                </div>
+            </div>
+            
+            <!-- Cost Comparison -->
+            <div class="mb-4 p-2 bg-gray-50 rounded">
+                <p class="mb-1 font-medium">Real-time cost comparison with equivalent alternative AI APIs</p>
+                <div class="flex flex-wrap gap-4 sm:gap-6">
+                    <label class="flex items-center">
+                        <input type="radio" name="rank_cost_comparison" value="1" class="mr-1" required>
+                        <span>1</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="radio" name="rank_cost_comparison" value="2" class="mr-1">
+                        <span>2</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="radio" name="rank_cost_comparison" value="3" class="mr-1">
+                        <span>3</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="radio" name="rank_cost_comparison" value="4" class="mr-1">
+                        <span>4</span>
+                    </label>
+                </div>
+            </div>
+            
+            <!-- Cost Monitoring -->
+            <div class="mb-4 p-2 bg-gray-50 rounded">
+                <p class="mb-1 font-medium">Real-time monitoring of overall and analytical AI API costs</p>
+                <div class="flex flex-wrap gap-4 sm:gap-6">
+                    <label class="flex items-center">
+                        <input type="radio" name="rank_cost_monitoring" value="1" class="mr-1" required>
+                        <span>1</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="radio" name="rank_cost_monitoring" value="2" class="mr-1">
+                        <span>2</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="radio" name="rank_cost_monitoring" value="3" class="mr-1">
+                        <span>3</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="radio" name="rank_cost_monitoring" value="4" class="mr-1">
+                        <span>4</span>
+                    </label>
+                </div>
+            </div>
+            
+            <!-- Efficiency/Security Monitoring -->
+            <div class="mb-4 p-2 bg-gray-50 rounded">
+                <p class="mb-1 font-medium">Real-time monitoring of AI API efficiency and security</p>
+                <div class="flex flex-wrap gap-4 sm:gap-6">
+                    <label class="flex items-center">
+                        <input type="radio" name="rank_efficiency_security" value="1" class="mr-1" required>
+                        <span>1</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="radio" name="rank_efficiency_security" value="2" class="mr-1">
+                        <span>2</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="radio" name="rank_efficiency_security" value="3" class="mr-1">
+                        <span>3</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="radio" name="rank_efficiency_security" value="4" class="mr-1">
+                        <span>4</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- New question about AI API providers -->
+            <label class="block text-lg font-semibold mb-2">
+                Which AI API providers are you currently using? (Select all that apply)
             </label>
             <div class="mb-4 space-y-2">
                 <label class="flex items-center">
-                    <input type="checkbox" name="features" value="efficiency_security_monitoring" class="mr-2">
-                    Real-time monitoring of AI API efficiency and security
+                    <input type="checkbox" name="providers" value="openai" class="mr-2" required>
+                    OpenAI (GPT models)
                 </label>
                 <label class="flex items-center">
-                    <input type="checkbox" name="features" value="cost_monitoring" class="mr-2">
-                    Real-time monitoring of overall and analytical AI API costs
+                    <input type="checkbox" name="providers" value="anthropic" class="mr-2">
+                    Anthropic (Claude models)
                 </label>
                 <label class="flex items-center">
-                    <input type="checkbox" name="features" value="cost_comparison" class="mr-2">
-                    Real-time cost comparison with equivalent alternative AI APIs
+                    <input type="checkbox" name="providers" value="google" class="mr-2">
+                    Google (Gemini models)
                 </label>
                 <label class="flex items-center">
-                    <input type="checkbox" name="features" value="auto_switch" class="mr-2">
-                    Automatic switching to the most cost-effective AI APIs
+                    <input type="checkbox" name="providers" value="deepseek" class="mr-2">
+                    DeepSeek
+                </label>
+                <label class="flex items-center">
+                    <input type="checkbox" name="providers" value="ngrok" class="mr-2">
+                    Ngrok
+                </label>
+
+<label class="flex items-center">
+                    <input type="checkbox" name="providers" value="mistral" class="mr-2">
+                    Mistral AI
+                </label>
+
+                <label class="flex items-center">
+                    <input type="checkbox" name="providers" value="other" class="mr-2">
+                    Other (please specify in the comments)
                 </label>
             </div>
 
-            <!-- Seconda domanda -->
+            <!-- Simplified monthly budget question -->
             <label class="block text-lg font-semibold mb-2">
-                Select your preferences from the following options:
+                What is your current monthly budget for AI APIs?
             </label>
             <div class="mb-4">
                 <label class="flex items-center">
-                    <input type="radio" name="dashboard_option" value="dashboard_only" class="mr-2">
+                    <input type="radio" name="budget" value="under_100" class="mr-2" required>
+                    Under $100
+                </label>
+                <label class="flex items-center">
+                    <input type="radio" name="budget" value="100_1000" class="mr-2">
+                    $100 - $1,000
+                </label>
+                <label class="flex items-center">
+                    <input type="radio" name="budget" value="1000_plus" class="mr-2">
+                    Over $1,000
+                </label>
+            </div>
+
+            <!-- New question about usage type -->
+            <label class="block text-lg font-semibold mb-2">
+                What are your primary AI API use cases? (Select all that apply)
+            </label>
+            <div class="mb-4 space-y-2">
+                <label class="flex items-center">
+                    <input type="checkbox" name="use_cases" value="text_generation" class="mr-2" required>
+                    Text generation/completion
+                </label>
+                <label class="flex items-center">
+                    <input type="checkbox" name="use_cases" value="embeddings" class="mr-2">
+                    Embeddings/Vector operations
+                </label>
+                <label class="flex items-center">
+                    <input type="checkbox" name="use_cases" value="image_generation" class="mr-2">
+                    Image generation
+                </label>
+                <label class="flex items-center">
+                    <input type="checkbox" name="use_cases" value="analysis" class="mr-2">
+                    Content analysis/moderation
+                </label>
+                <label class="flex items-center">
+                    <input type="checkbox" name="use_cases" value="other" class="mr-2">
+                    Other (please specify in comments)
+                </label>
+            </div>
+
+            <!-- Second original question -->
+            <label class="block text-lg font-semibold mb-2">
+                Select your preferences:
+            </label>
+            <div class="mb-4">
+                <label class="block text-md font-medium mb-1">Dashboard presentation:</label>
+                <label class="flex items-center">
+                    <input type="radio" name="dashboard_option" value="dashboard_only" class="mr-2" required>
                     Dashboard only
                 </label>
                 <label class="flex items-center">
@@ -55,8 +222,9 @@
                 </label>
             </div>
             <div class="mb-4">
+                <label class="block text-md font-medium mb-1">Usage type:</label>
                 <label class="flex items-center">
-                    <input type="radio" name="usage_option" value="individuals" class="mr-2">
+                    <input type="radio" name="usage_option" value="individuals" class="mr-2" required>
                     For individual professionals
                 </label>
                 <label class="flex items-center">
@@ -65,12 +233,12 @@
                 </label>
             </div>
 
-            <!-- Terzo item -->
+            <!-- Third item - optional comments -->
             <label class="block text-lg font-semibold mb-2">
-                Let us know what interests you most about the service (specific stacks, security protocols, APIs, business models, etc.):
+                Let us know what interests you most about the service (specific cost optimization needs, security requirements, switching concerns, etc.):
             </label>
-            <textarea id="custom_request" class="w-full p-2 border rounded-lg mt-1 mb-4" 
-                      placeholder="Write here..."></textarea>
+		<textarea id="custom_request" name="custom_request" class="w-full p-2 border 			rounded-lg mt-1 mb-4" 
+          	placeholder="Write here (optional)..."></textarea>
 
             <!-- Messaggio di contatto -->
             <p class="text-sm text-gray-600 mb-4">
@@ -79,10 +247,31 @@
             </p>
 
             <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">
-                Beta-APIGOAL Dashboard
+                Join Beta-APIGOAL Dashboard
             </button>
         </form>
     </div>
+
+<script>
+document.getElementById('survey-form').addEventListener('submit', function (e) {
+    const requiredGroups = [
+        'rank_auto_switch',
+        'rank_cost_comparison',
+        'rank_cost_monitoring',
+        'rank_efficiency_security'
+    ];
+
+    for (let group of requiredGroups) {
+        const selected = document.querySelector(`input[name="${group}"]:checked`);
+        if (!selected) {
+            alert("Please rank all four features before submitting.");
+            e.preventDefault();
+            return;
+        }
+    }
+});
+</script>
+
 
     <script>
         document.addEventListener("DOMContentLoaded", async function() {
@@ -183,7 +372,6 @@
             });
         });
     </script>
-
 
 
 </body>
