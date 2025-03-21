@@ -307,88 +307,92 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     await checkSurveyStatus();
 
-    document.getElementById("survey-form").addEventListener("submit", async function(event) {
-        event.preventDefault();
-
-        console.log("📝 Submitting survey...");
-
-        const { data: { user }, error } = await supabaseClient.auth.getUser();
-        if (!user) {
-            alert("Error: User not logged in. Please refresh the page.");
-            return;
-        }
-
-        console.log("✅ User found for survey submission:", user);
-
-        // Legge i dati dai radio button
-        const rankAutoSwitch = document.querySelector('input[name="rank_auto_switch"]:checked')?.value || null;
-        const rankCostComparison = document.querySelector('input[name="rank_cost_comparison"]:checked')?.value || null;
-        const rankCostMonitoring = document.querySelector('input[name="rank_cost_monitoring"]:checked')?.value || null;
-        const rankEfficiencySecurity = document.querySelector('input[name="rank_efficiency_security"]:checked')?.value || null;
-
-	// Recupero il valore del budget
-	const budget = document.querySelector('input[name="budget"]:checked')?.value || null;
-	console.log("🔍 Budget Type:", typeof budget, "Value:", budget);
-
-        // Opzioni aggiuntive
-        const dashboardOption = document.querySelector('input[name="dashboard_option"]:checked')?.value || null;
-        const usageOption = document.querySelector('input[name="usage_option"]:checked')?.value || null;
-        const customRequest = document.getElementById("custom_request").value.trim();
-	// Controlla se almeno una checkbox dei use_cases è selezionata
-	const selectedUseCases = Array.from(document.querySelectorAll('input[name="use_cases"]:checked'))
-                              .map(input => input.value);
-	console.log("🔍 Use Cases:", selectedUseCases);
-
-        // Controlla se almeno una checkbox è selezionata
-        const selectedProviders = Array.from(document.querySelectorAll('input[name="providers"]:checked'))
-                                      .map(input => input.value);
-
-        if (selectedProviders.length === 0) {
-            alert("⚠️ Please select at least one AI API provider.");
-            return;
-        }
-
-        // Verifica se i dati richiesti sono tutti presenti
-        if (!rankAutoSwitch || !rankCostComparison || !rankCostMonitoring || !rankEfficiencySecurity) {
-            alert("⚠️ Please rank all features before submitting.");
-            return;
-        }
-
-	// Controlla se il budget è selezionato
-	if (!budget) {
-    	    alert("⚠️ Please select your monthly AI API budget.");
-            return;
-	}
-	    
-        try {
-            const { error } = await supabaseClient
-                .from('beta_survey')
-                .insert([{
-                    user_id: user.id,
-                    rank_auto_switch: rankAutoSwitch,
-                    rank_cost_comparison: rankCostComparison,
-                    rank_cost_monitoring: rankCostMonitoring,
-                    rank_efficiency_security: rankEfficiencySecurity,
-                    dashboard_option: dashboardOption,
-                    usage_option: usageOption,
-                    custom_request: customRequest,
-                    providers: selectedProviders,
-		    budget: budget, 
-		    use_cases: selectedUseCases
-                }]);
-
-            if (error) {
-                console.error("❌ Survey Error:", error);
-                alert("Error submitting survey. Try again.");
-            } else {
-                console.log("🎉 Survey submitted successfully!");
-                window.location.href = "https://apigoal.com/beta_dashboard";
-            }
-        } catch (error) {
-            console.error("❌ Network Error:", error);
-            alert("Network error. Try again later.");
-        }
-    });
+	document.getElementById("survey-form").addEventListener("submit", async function(event) {
+	    event.preventDefault();
+	
+	    console.log("📝 Submitting survey...");
+	
+	    const { data: { user }, error } = await supabaseClient.auth.getUser();
+	    if (!user) {
+	        alert("Error: User not logged in. Please refresh the page.");
+	        return;
+	    }
+	
+	    console.log("✅ User found for survey submission:", user);
+	
+	    // Legge i dati dai radio button
+	    const rankAutoSwitch = document.querySelector('input[name="rank_auto_switch"]:checked')?.value || null;
+	    const rankCostComparison = document.querySelector('input[name="rank_cost_comparison"]:checked')?.value || null;
+	    const rankCostMonitoring = document.querySelector('input[name="rank_cost_monitoring"]:checked')?.value || null;
+	    const rankEfficiencySecurity = document.querySelector('input[name="rank_efficiency_security"]:checked')?.value || null;
+	    const budget = document.querySelector('input[name="budget"]:checked')?.value || null;
+	
+	    // Opzioni aggiuntive
+	    const dashboardOption = document.querySelector('input[name="dashboard_option"]:checked')?.value || null;
+	    const usageOption = document.querySelector('input[name="usage_option"]:checked')?.value || null;
+	    const customRequest = document.getElementById("custom_request").value.trim();
+	
+	    // Checkbox
+	    const selectedProviders = Array.from(document.querySelectorAll('input[name="providers"]:checked'))
+	                                   .map(input => input.value);
+	    const selectedUseCases = Array.from(document.querySelectorAll('input[name="use_cases"]:checked'))
+	                                   .map(input => input.value);
+	
+	    // Log per debugging
+	    console.log("🔍 Budget:", budget);
+	    console.log("🔍 Providers:", selectedProviders);
+	    console.log("🔍 Use cases:", selectedUseCases);
+	
+	    // Validazioni
+	    if (!rankAutoSwitch || !rankCostComparison || !rankCostMonitoring || !rankEfficiencySecurity) {
+	        alert("⚠️ Please rank all features before submitting.");
+	        return;
+	    }
+	
+	    if (!budget) {
+	        alert("⚠️ Please select your monthly AI API budget.");
+	        return;
+	    }
+	
+	    if (selectedProviders.length === 0) {
+	        alert("⚠️ Please select at least one AI API provider.");
+	        return;
+	    }
+	
+	    if (selectedUseCases.length === 0) {
+	        alert("⚠️ Please select at least one use case.");
+	        return;
+	    }
+	
+	    try {
+	        const { error } = await supabaseClient
+	            .from('beta_survey')
+	            .insert([{
+	                user_id: user.id,
+	                rank_auto_switch: rankAutoSwitch,
+	                rank_cost_comparison: rankCostComparison,
+	                rank_cost_monitoring: rankCostMonitoring,
+	                rank_efficiency_security: rankEfficiencySecurity,
+	                budget: budget,
+	                dashboard_option: dashboardOption,
+	                usage_option: usageOption,
+	                custom_request: customRequest,
+	                providers: selectedProviders,
+	                use_cases: selectedUseCases // ✅ finalmente incluso
+	            }]);
+	
+	        if (error) {
+	            console.error("❌ Survey Error:", error);
+	            alert("Error submitting survey. Try again.");
+	        } else {
+	            console.log("🎉 Survey submitted successfully!");
+	            window.location.href = "https://apigoal.com/beta_dashboard";
+	        }
+	    } catch (error) {
+	        console.error("❌ Network Error:", error);
+	        alert("Network error. Try again later.");
+	    }
+	});
 });
 </script>
 
