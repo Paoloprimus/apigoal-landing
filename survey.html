@@ -334,6 +334,10 @@ document.addEventListener("DOMContentLoaded", async function() {
         const dashboardOption = document.querySelector('input[name="dashboard_option"]:checked')?.value || null;
         const usageOption = document.querySelector('input[name="usage_option"]:checked')?.value || null;
         const customRequest = document.getElementById("custom_request").value.trim();
+	// Controlla se almeno una checkbox dei use_cases è selezionata
+	const selectedUseCases = Array.from(document.querySelectorAll('input[name="use_cases"]:checked'))
+                              .map(input => input.value);
+	console.log("🔍 Use Cases:", selectedUseCases);
 
         // Controlla se almeno una checkbox è selezionata
         const selectedProviders = Array.from(document.querySelectorAll('input[name="providers"]:checked'))
@@ -370,6 +374,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                     custom_request: customRequest,
                     providers: selectedProviders,
 		    budget: budget // <-- Assicuriamoci che venga inviato
+		    use_cases: selectedUseCases // ✅ Aggiunto
                 }]);
 
             if (error) {
