@@ -339,40 +339,63 @@ document.getElementById('survey-form').addEventListener('submit', function (e) {
                     return;
                 }
     
-                console.log("✅ User found for survey submission:", user);
-    
-                const features = Array.from(document.querySelectorAll('input[name="features"]:checked'))
-                                    .map(input => input.value);
-                const dashboardOption = document.querySelector('input[name="dashboard_option"]:checked')?.value || null;
-                const usageOption = document.querySelector('input[name="usage_option"]:checked')?.value || null;
-                const customRequest = document.getElementById("custom_request").value.trim();
-    
-                try {
-                    const { error } = await supabaseClient
-                        .from('beta_survey')
-                        .insert([{
-                            user_id: user.id,
-                            features: features,
-                            dashboard_option: dashboardOption,
-                            usage_option: usageOption,
-                            custom_request: customRequest
-                        }]);
-    
-                    if (error) {
-                        console.error("❌ Survey Error:", error);
-                        alert("Error submitting survey. Try again.");
-                    } else {
-                        console.log("🎉 Survey submitted successfully!");
-                        window.location.href = "https://apigoal.com/beta_dashboard";
-                    }
-                } catch (error) {
-                    console.error("❌ Network Error:", error);
-                    alert("Network error. Try again later.");
-                }
-            });
-        });
+	document.getElementById("survey-form").addEventListener("submit", async function(event) {
+	    event.preventDefault();
+	
+	    console.log("📝 Submitting survey...");
+	
+	    const { data: { user }, error } = await supabaseClient.auth.getUser();
+	    if (!user) {
+	        alert("Error: User not logged in. Please refresh the page.");
+	        return;
+	    }
+	
+	    console.log("✅ User found for survey submission:", user);
+	
+	    // Legge i dati dai radio button
+	    const rankAutoSwitch = document.querySelector('input[name="rank_auto_switch"]:checked')?.value || null;
+	    const rankCostComparison = document.querySelector('input[name="rank_cost_comparison"]:checked')?.value || null;
+	    const rankCostMonitoring = document.querySelector('input[name="rank_cost_monitoring"]:checked')?.value || null;
+	    const rankEfficiencySecurity = document.querySelector('input[name="rank_efficiency_security"]:checked')?.value || null;
+	    
+	    // Opzioni aggiuntive
+	    const dashboardOption = document.querySelector('input[name="dashboard_option"]:checked')?.value || null;
+	    const usageOption = document.querySelector('input[name="usage_option"]:checked')?.value || null;
+	    const customRequest = document.getElementById("custom_request").value.trim();
+	
+	    // Verifica se i dati richiesti sono tutti presenti
+	    if (!rankAutoSwitch || !rankCostComparison || !rankCostMonitoring || !rankEfficiencySecurity) {
+	        alert("⚠️ Please rank all features before submitting.");
+	        return;
+	    }
+	
+	    try {
+	        const { error } = await supabaseClient
+	            .from('beta_survey')
+	            .insert([{
+	                user_id: user.id,
+	                rank_auto_switch: rankAutoSwitch,
+	                rank_cost_comparison: rankCostComparison,
+	                rank_cost_monitoring: rankCostMonitoring,
+	                rank_efficiency_security: rankEfficiencySecurity,
+	                dashboard_option: dashboardOption,
+	                usage_option: usageOption,
+	                custom_request: customRequest
+	            }]);
+	
+	        if (error) {
+	            console.error("❌ Survey Error:", error);
+	            alert("Error submitting survey. Try again.");
+	        } else {
+	            console.log("🎉 Survey submitted successfully!");
+	            window.location.href = "https://apigoal.com/beta_dashboard";
+	        }
+	    } catch (error) {
+	        console.error("❌ Network Error:", error);
+	        alert("Network error. Try again later.");
+	    }
+	});
     </script>
-
 
 </body>
 </html>
