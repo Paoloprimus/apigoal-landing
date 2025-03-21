@@ -1,63 +1,93 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beta Tester Survey - APIGOAL</title>
+    <title>Welcome in APIGOAL!</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 </head>
 <body class="bg-gradient-to-b from-gray-100 to-gray-300 text-gray-900 flex items-center justify-center min-h-screen">
 
     <div class="bg-white shadow-xl rounded-lg p-8 max-w-md w-full text-center">
-        <h1 class="text-2xl font-bold mb-4">🎯 APIGOAL Beta Survey</h1>
-        <p id="message" class="text-gray-600">Please take a moment to answer a few questions.</p>
+        <h1 class="text-2xl font-bold mb-2">🎯 WELCOME IN APIGOAL!</h1>
+        <p class="text-sm text-gray-600 mb-6">
+            APIGOAL is a SaaS project for AI developers and startups, focusing on AI API cost monitoring and optimization.  
+            Help us tailor the service by filling out this short survey. Thank you!
+        </p>
 
-        <form id="survey-form" class="mt-4">
-            <label class="block text-left font-semibold">Which AI APIs do you use?</label>
-            <input type="text" id="api_usage" class="w-full p-2 border rounded-lg mt-1 mb-4" placeholder="e.g., OpenAI, Anthropic, Hugging Face" required>
+        <form id="survey-form" class="mt-4 text-left">
+            <!-- Prima domanda -->
+            <label class="block text-lg font-semibold mb-2">
+                Rank the importance of the following features under development:
+            </label>
+            <div class="mb-4 space-y-2">
+                <label class="flex items-center">
+                    <input type="checkbox" name="features" value="efficiency_security_monitoring" class="mr-2">
+                    Real-time monitoring of AI API efficiency and security
+                </label>
+                <label class="flex items-center">
+                    <input type="checkbox" name="features" value="cost_monitoring" class="mr-2">
+                    Real-time monitoring of overall and analytical AI API costs
+                </label>
+                <label class="flex items-center">
+                    <input type="checkbox" name="features" value="cost_comparison" class="mr-2">
+                    Real-time cost comparison with equivalent alternative AI APIs
+                </label>
+                <label class="flex items-center">
+                    <input type="checkbox" name="features" value="auto_switch" class="mr-2">
+                    Automatic switching to the most cost-effective AI APIs
+                </label>
+            </div>
 
-            <label class="block text-left font-semibold">What are your biggest concerns about AI API usage?</label>
-            <textarea id="concerns" class="w-full p-2 border rounded-lg mt-1 mb-4" placeholder="Write your answer here..." required></textarea>
+            <!-- Seconda domanda -->
+            <label class="block text-lg font-semibold mb-2">
+                Select your preferences from the following options:
+            </label>
+            <div class="mb-4">
+                <label class="flex items-center">
+                    <input type="radio" name="dashboard_option" value="dashboard_only" class="mr-2">
+                    Dashboard only
+                </label>
+                <label class="flex items-center">
+                    <input type="radio" name="dashboard_option" value="dashboard_widgets" class="mr-2">
+                    Dashboard + widgets
+                </label>
+            </div>
+            <div class="mb-4">
+                <label class="flex items-center">
+                    <input type="radio" name="usage_option" value="individuals" class="mr-2">
+                    For individual professionals
+                </label>
+                <label class="flex items-center">
+                    <input type="radio" name="usage_option" value="teams" class="mr-2">
+                    For teams
+                </label>
+            </div>
 
-            <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">Submit</button>
+            <!-- Terzo item -->
+            <label class="block text-lg font-semibold mb-2">
+                Let us know what interests you most about the service (specific stacks, security protocols, APIs, business models, etc.):
+            </label>
+            <textarea id="custom_request" class="w-full p-2 border rounded-lg mt-1 mb-4" 
+                      placeholder="Write here..."></textarea>
+
+            <!-- Messaggio di contatto -->
+            <p class="text-sm text-gray-600 mb-4">
+                Feel free to contact us at <a href="mailto:info@apigoal.com" class="text-blue-600 underline">info@apigoal.com</a> for any requests.  
+                Thank you for your availability!
+            </p>
+
+            <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">
+                Beta-APIGOAL Dashboard
+            </button>
         </form>
     </div>
 
     <script>
-        const supabaseUrl = 'https://wenndkgeebooikzikhew.supabase.co'; // Sostituisci con l'URL del tuo progetto Supabase
-        const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlbm5ka2dlZWJvb2lremlraGV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIwMjk0NjUsImV4cCI6MjA1NzYwNTQ2NX0.4_Pnkffn1mPUkHyYfk6bDmdWk2L14LTV5hEEvDaWu8c'; // Sostituisci con la chiave anonima del tuo progetto Supabase
+        const supabaseUrl = 'https://wenndkgeebooikzikhew.supabase.co';
+        const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlbm5ka2dlZWJvb2lremlraGV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIwMjk0NjUsImV4cCI6MjA1NzYwNTQ2NX0.4_Pnkffn1mPUkHyYfk6bDmdWk2L14LTV5hEEvDaWu8c';
         const supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
-
-        async function checkSurveyStatus() {
-            const { data: { user } } = await supabase.auth.getUser();
-            if (!user) {
-                console.warn("No user logged in, redirecting...");
-                window.location.href = "https://apigoal.com"; // Torna alla landing se l'utente non è loggato
-                return;
-            }
-
-            try {
-                const { data, error } = await supabase
-                    .from('beta_survey')
-                    .select('*')
-                    .eq('user_id', user.id);
-
-                if (error) {
-                    console.error("Failed to fetch survey data:", error);
-                    return;
-                }
-
-                if (data.length > 0) {
-                    console.log("User already completed survey, redirecting...");
-                    window.location.href = "https://apigoal.com/dashboard"; // Se ha già risposto, va alla dashboard
-                }
-            } catch (error) {
-                console.error("Survey Check Error:", error);
-            }
-        }
 
         document.getElementById("survey-form").addEventListener("submit", async function(event) {
             event.preventDefault();
@@ -68,27 +98,37 @@
                 return;
             }
 
-            const apiUsage = document.getElementById("api_usage").value;
-            const concerns = document.getElementById("concerns").value;
+            // Raccolta dati dal form
+            const features = Array.from(document.querySelectorAll('input[name="features"]:checked'))
+                                 .map(input => input.value);
+            const dashboardOption = document.querySelector('input[name="dashboard_option"]:checked')?.value || null;
+            const usageOption = document.querySelector('input[name="usage_option"]:checked')?.value || null;
+            const customRequest = document.getElementById("custom_request").value.trim();
 
+            // Inserimento dati in Supabase
             try {
                 const { error } = await supabase
                     .from('beta_survey')
-                    .insert([{ user_id: user.id, api_usage: apiUsage, concerns: concerns }]);
+                    .insert([{
+                        user_id: user.id,
+                        features: features,
+                        dashboard_option: dashboardOption,
+                        usage_option: usageOption,
+                        custom_request: customRequest
+                    }]);
 
                 if (error) {
                     console.error("Survey Error:", error);
                     alert("Error submitting survey. Try again.");
                 } else {
-                    window.location.href = "https://apigoal.com/dashboard";
+                    window.location.href = "https://apigoal.com/beta_dashboard"; // Redirect
                 }
             } catch (error) {
                 console.error("Network Error:", error);
                 alert("Network error. Try again later.");
             }
         });
-
-        checkSurveyStatus();
     </script>
+
 </body>
 </html>
