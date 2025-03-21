@@ -85,78 +85,89 @@
     </div>
 
     <script>
-        // Inizializza Supabase PRIMA di qualsiasi utilizzo
-        const supabaseUrl = 'https://wenndkgeebooikzikhew.supabase.co';
-        const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlbm5ka2dlZWJvb2lremlraGV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIwMjk0NjUsImV4cCI6MjA1NzYwNTQ2NX0.4_Pnkffn1mPUkHyYfk6bDmdWk2L14LTV5hEEvDaWu8c';
-        const supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
-    
-        async function checkSurveyStatus() {
-            const { data: { user }, error } = await supabase.auth.getUser();
+        document.addEventListener("DOMContentLoaded", function() {
+            console.log("Document loaded. Initializing Supabase...");
             
-            if (!user) {
-                console.warn("No user logged in, redirecting...");
-                window.location.href = "https://apigoal.com"; 
+            // Assicuriamoci che la libreria sia effettivamente disponibile
+            if (typeof supabase === 'undefined') {
+                console.error("Supabase library not loaded.");
                 return;
             }
     
-            try {
-                const { data, error } = await supabase
-                    .from('beta_survey')
-                    .select('*')
-                    .eq('user_id', user.id);
+            const supabaseUrl = 'https://wenndkgeebooikzikhew.supabase.co';
+            const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlbm5ka2dlZWJvb2lremlraGV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIwMjk0NjUsImV4cCI6MjA1NzYwNTQ2NX0.4_Pnkffn1mPUkHyYfk6bDmdWk2L14LTV5hEEvDaWu8c';
     
-                if (error) {
-                    console.error("Failed to fetch survey data:", error);
+            const supabaseClient = supabase.createClient(supabaseUrl, supabaseAnonKey);
+            console.log("Supabase client initialized:", supabaseClient);
+    
+            async function checkSurveyStatus() {
+                const { data: { user }, error } = await supabaseClient.auth.getUser();
+    
+                if (!user) {
+                    console.warn("No user logged in, redirecting...");
+                    window.location.href = "https://apigoal.com"; 
                     return;
                 }
     
-                if (data.length > 0) {
-                    console.log("User already completed survey, redirecting...");
-                    window.location.href = "https://apigoal.com/beta_dashboard";
+                try {
+                    const { data, error } = await supabaseClient
+                        .from('beta_survey')
+                        .select('*')
+                        .eq('user_id', user.id);
+    
+                    if (error) {
+                        console.error("Failed to fetch survey data:", error);
+                        return;
+                    }
+    
+                    if (data.length > 0) {
+                        console.log("User already completed survey, redirecting...");
+                        window.location.href = "https://apigoal.com/beta_dashboard";
+                    }
+                } catch (error) {
+                    console.error("Survey Check Error:", error);
                 }
-            } catch (error) {
-                console.error("Survey Check Error:", error);
-            }
-        }
-    
-        document.addEventListener("DOMContentLoaded", checkSurveyStatus);
-    
-        document.getElementById("survey-form").addEventListener("submit", async function(event) {
-            event.preventDefault();
-    
-            const { data: { user }, error } = await supabase.auth.getUser();
-            if (!user) {
-                alert("Error: User not logged in. Please refresh the page.");
-                return;
             }
     
-            const features = Array.from(document.querySelectorAll('input[name="features"]:checked'))
-                                 .map(input => input.value);
-            const dashboardOption = document.querySelector('input[name="dashboard_option"]:checked')?.value || null;
-            const usageOption = document.querySelector('input[name="usage_option"]:checked')?.value || null;
-            const customRequest = document.getElementById("custom_request").value.trim();
+            checkSurveyStatus();
     
-            try {
-                const { error } = await supabase
-                    .from('beta_survey')
-                    .insert([{
-                        user_id: user.id,
-                        features: features,
-                        dashboard_option: dashboardOption,
-                        usage_option: usageOption,
-                        custom_request: customRequest
-                    }]);
+            document.getElementById("survey-form").addEventListener("submit", async function(event) {
+                event.preventDefault();
     
-                if (error) {
-                    console.error("Survey Error:", error);
-                    alert("Error submitting survey. Try again.");
-                } else {
-                    window.location.href = "https://apigoal.com/beta_dashboard";
+                const { data: { user }, error } = await supabaseClient.auth.getUser();
+                if (!user) {
+                    alert("Error: User not logged in. Please refresh the page.");
+                    return;
                 }
-            } catch (error) {
-                console.error("Network Error:", error);
-                alert("Network error. Try again later.");
-            }
+    
+                const features = Array.from(document.querySelectorAll('input[name="features"]:checked'))
+                                    .map(input => input.value);
+                const dashboardOption = document.querySelector('input[name="dashboard_option"]:checked')?.value || null;
+                const usageOption = document.querySelector('input[name="usage_option"]:checked')?.value || null;
+                const customRequest = document.getElementById("custom_request").value.trim();
+    
+                try {
+                    const { error } = await supabaseClient
+                        .from('beta_survey')
+                        .insert([{
+                            user_id: user.id,
+                            features: features,
+                            dashboard_option: dashboardOption,
+                            usage_option: usageOption,
+                            custom_request: customRequest
+                        }]);
+    
+                    if (error) {
+                        console.error("Survey Error:", error);
+                        alert("Error submitting survey. Try again.");
+                    } else {
+                        window.location.href = "https://apigoal.com/beta_dashboard";
+                    }
+                } catch (error) {
+                    console.error("Network Error:", error);
+                    alert("Network error. Try again later.");
+                }
+            });
         });
     </script>
 
