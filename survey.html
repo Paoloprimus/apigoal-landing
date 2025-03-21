@@ -85,10 +85,9 @@
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", async function() {
             console.log("Document loaded. Initializing Supabase...");
-            
-            // Assicuriamoci che la libreria sia effettivamente disponibile
+    
             if (typeof supabase === 'undefined') {
                 console.error("Supabase library not loaded.");
                 return;
@@ -101,22 +100,29 @@
             console.log("Supabase client initialized:", supabaseClient);
     
             async function checkSurveyStatus() {
-                const { data: { user }, error } = await supabaseClient.auth.getUser();
-    
-                if (!user) {
-                    console.warn("No user logged in, redirecting...");
-                    window.location.href = "https://apigoal.com"; 
-                    return;
-                }
-    
                 try {
-                    const { data, error } = await supabaseClient
+                    console.log("Checking user authentication...");
+                    const { data: { user }, error } = await supabaseClient.auth.getUser();
+    
+                    if (error) {
+                        console.error("Error retrieving user:", error);
+                        return;
+                    }
+    
+                    if (!user) {
+                        console.warn("No user logged in, staying on survey page.");
+                        return;  // Non fa il redirect, così puoi vedere la pagina.
+                    }
+    
+                    console.log("User found:", user);
+    
+                    const { data, error: surveyError } = await supabaseClient
                         .from('beta_survey')
                         .select('*')
                         .eq('user_id', user.id);
     
-                    if (error) {
-                        console.error("Failed to fetch survey data:", error);
+                    if (surveyError) {
+                        console.error("Failed to fetch survey data:", surveyError);
                         return;
                     }
     
@@ -129,7 +135,7 @@
                 }
             }
     
-            checkSurveyStatus();
+            await checkSurveyStatus();  // Ora aspettiamo correttamente la risposta prima di fare un redirect.
     
             document.getElementById("survey-form").addEventListener("submit", async function(event) {
                 event.preventDefault();
