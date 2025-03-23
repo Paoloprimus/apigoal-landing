@@ -356,84 +356,68 @@ document.addEventListener("DOMContentLoaded", async function() {
 }); // 👈 chiusura corretta del DOMContentLoaded
 
 	
-	// Disclaimer modal logic
-document.getElementById("openDisclaimer").addEventListener("click", function () {
-    document.getElementById("disclaimerModal").classList.remove("hidden");
-});
+    // Disclaimer modal logic
+    document.getElementById("openDisclaimer").addEventListener("click", function () {
+        document.getElementById("disclaimerModal").classList.remove("hidden");
+    });
 
-document.getElementById("closeDisclaimer").addEventListener("click", function () {
-    document.getElementById("disclaimerModal").classList.add("hidden");
-});
+    document.getElementById("closeDisclaimer").addEventListener("click", function () {
+        document.getElementById("disclaimerModal").classList.add("hidden");
+    });
 
-document.getElementById("closeDisclaimerBottom").addEventListener("click", function () {
-    document.getElementById("disclaimerModal").classList.add("hidden");
-});
+    document.getElementById("closeDisclaimerBottom").addEventListener("click", function () {
+        document.getElementById("disclaimerModal").classList.add("hidden");
+    });
 
-	
-	
-	document.getElementById("survey-form").addEventListener("submit", async function(event) {
-	    event.preventDefault();
-	
-	    console.log("📝 Submitting survey...");
-	
-	    const { data: { user }, error } = await supabaseClient.auth.getUser();
-	    if (!user) {
-	        alert("Error: User not logged in. Please refresh the page.");
-	        return;
-	    }
-	
-	    console.log("✅ User found for survey submission:", user);
-	
-	    // Legge i dati dai radio button
-	    const rankAutoSwitch = document.querySelector('input[name="rank_auto_switch"]:checked')?.value || null;
-	    const rankCostComparison = document.querySelector('input[name="rank_cost_comparison"]:checked')?.value || null;
-	    const rankCostMonitoring = document.querySelector('input[name="rank_cost_monitoring"]:checked')?.value || null;
-	    const rankEfficiencySecurity = document.querySelector('input[name="rank_efficiency_security"]:checked')?.value || null;
-	    const budget = document.querySelector('input[name="budget"]:checked')?.value || null;
-	
-	    // Opzioni aggiuntive
-	    const dashboardOption = document.querySelector('input[name="dashboard_option"]:checked')?.value || null;
-	    const usageOption = document.querySelector('input[name="usage_option"]:checked')?.value || null;
-	    const customRequest = document.getElementById("custom_request").value.trim();
-	
-	    // Checkbox
-	    const selectedProviders = Array.from(document.querySelectorAll('input[name="providers"]:checked'))
-	                                   .map(input => input.value);
-	    const selectedUseCases = Array.from(document.querySelectorAll('input[name="use_cases"]:checked'))
-	                                   .map(input => input.value);
-	
-	    // Log per debugging
-	    console.log("🔍 Budget:", budget);
-	    console.log("🔍 Providers:", selectedProviders);
-	    console.log("🔍 Use cases:", selectedUseCases);
-	
-	    // Validazioni
-	    if (!rankAutoSwitch || !rankCostComparison || !rankCostMonitoring || !rankEfficiencySecurity) {
-	        alert("⚠️ Please rank all features before submitting.");
-	        return;
-	    }
-		// ✅ Nuovo controllo fuori dal blocco sopra
-		const disclaimerAccepted = document.getElementById("disclaimer_check").checked;
-		if (!disclaimerAccepted) {
-    			alert("⚠️ You must accept the APIGOAL Beta Disclaimer to continue.");
-    			return;
-		}
-		
-	    if (!budget) {
-	        alert("⚠️ Please select your monthly AI API budget.");
-	        return;
-	    }
-	
-	    if (selectedProviders.length === 0) {
-	        alert("⚠️ Please select at least one AI API provider.");
-	        return;
-	    }
-	
-	    if (selectedUseCases.length === 0) {
-	        alert("⚠️ Please select at least one use case.");
-	        return;
-	    }
-	
+    // Survey form submit
+    document.getElementById("survey-form").addEventListener("submit", async function(event) {
+        event.preventDefault();
+
+        console.log("📝 Submitting survey...");
+
+        const { data: { user }, error } = await supabaseClient.auth.getUser();
+        if (!user) {
+            alert("Error: User not logged in. Please refresh the page.");
+            return;
+        }
+
+        const rankAutoSwitch = document.querySelector('input[name="rank_auto_switch"]:checked')?.value || null;
+        const rankCostComparison = document.querySelector('input[name="rank_cost_comparison"]:checked')?.value || null;
+        const rankCostMonitoring = document.querySelector('input[name="rank_cost_monitoring"]:checked')?.value || null;
+        const rankEfficiencySecurity = document.querySelector('input[name="rank_efficiency_security"]:checked')?.value || null;
+        const budget = document.querySelector('input[name="budget"]:checked')?.value || null;
+        const dashboardOption = document.querySelector('input[name="dashboard_option"]:checked')?.value || null;
+        const usageOption = document.querySelector('input[name="usage_option"]:checked')?.value || null;
+        const customRequest = document.getElementById("custom_request").value.trim();
+        const selectedProviders = Array.from(document.querySelectorAll('input[name="providers"]:checked')).map(input => input.value);
+        const selectedUseCases = Array.from(document.querySelectorAll('input[name="use_cases"]:checked')).map(input => input.value);
+
+        if (!rankAutoSwitch || !rankCostComparison || !rankCostMonitoring || !rankEfficiencySecurity) {
+            alert("⚠️ Please rank all features before submitting.");
+            return;
+        }
+
+        const disclaimerAccepted = document.getElementById("disclaimer_check").checked;
+        if (!disclaimerAccepted) {
+            alert("⚠️ You must accept the APIGOAL Beta Disclaimer to continue.");
+            return;
+        }
+
+        if (!budget) {
+            alert("⚠️ Please select your monthly AI API budget.");
+            return;
+        }
+
+        if (selectedProviders.length === 0) {
+            alert("⚠️ Please select at least one AI API provider.");
+            return;
+        }
+
+        if (selectedUseCases.length === 0) {
+            alert("⚠️ Please select at least one use case.");
+            return;
+        }
+
         try {
             const { error } = await supabaseClient
                 .from('beta_survey')
@@ -448,18 +432,13 @@ document.getElementById("closeDisclaimerBottom").addEventListener("click", funct
                     usage_option: usageOption,
                     custom_request: customRequest,
                     providers: selectedProviders,
-                    use_cases: selectedUseCases // ✅ finalmente incluso
+                    use_cases: selectedUseCases
                 }]);
 
             if (error) {
                 console.error("❌ Survey Error:", error);
                 alert("Error submitting survey. Try again.");
             } else {
-                console.log("🎉 Survey submitted successfully!");
-                console.log("📩 User object:", user);
-                console.log("📩 Sending to email:", user?.email);
-
-                // ✅ Invio email di benvenuto con EmailJS
                 emailjs.send("service_t0omkv5", "template_wsinzl8", {
                     to_email: user.email
                 })
@@ -476,10 +455,10 @@ document.getElementById("closeDisclaimerBottom").addEventListener("click", funct
             console.error("❌ Network Error submitting survey:", error);
             alert("Network error. Please try again later.");
         }
-    }); // chiude il listener del form
-
-}); // chiude DOMContentLoaded
+    });
+}); // ✅ chiusura DOMContentLoaded
 </script>
+
 
 </body>
 </html>
