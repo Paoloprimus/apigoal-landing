@@ -434,44 +434,50 @@ document.getElementById("closeDisclaimerBottom").addEventListener("click", funct
 	        return;
 	    }
 	
-	    try {
-	        const { error } = await supabaseClient
-	            .from('beta_survey')
-	            .insert([{
-	                user_id: user.id,
-	                rank_auto_switch: rankAutoSwitch,
-	                rank_cost_comparison: rankCostComparison,
-	                rank_cost_monitoring: rankCostMonitoring,
-	                rank_efficiency_security: rankEfficiencySecurity,
-	                budget: budget,
-	                dashboard_option: dashboardOption,
-	                usage_option: usageOption,
-	                custom_request: customRequest,
-	                providers: selectedProviders,
-	                use_cases: selectedUseCases // ✅ finalmente incluso
-	            }]);
-	
-	        if (error) {
-	            console.error("❌ Survey Error:", error);
-	            alert("Error submitting survey. Try again.");
-	        } else {
-	            console.log("🎉 Survey submitted successfully!");
-		    console.log("📩 User object:", user);
-		    console.log("📩 Sending to email:", user?.email);
-    		    // ✅ Invio email di benvenuto con EmailJS
-    		    emailjs.send("service_t0omkv5", "template_wsinzl8", {
-        	    	to_email: user.email
-    		    })
-    		    .then(() => {
-        	    	console.log("📧 Welcome email sent successfully!");
-		    })
-    		    .catch((error) => {
-        		console.error("❌ Failed to send welcome email:", error);
-    		    });
-	            window.location.href = "https://apigoal.com/beta_dashboard";
+        try {
+            const { error } = await supabaseClient
+                .from('beta_survey')
+                .insert([{
+                    user_id: user.id,
+                    rank_auto_switch: rankAutoSwitch,
+                    rank_cost_comparison: rankCostComparison,
+                    rank_cost_monitoring: rankCostMonitoring,
+                    rank_efficiency_security: rankEfficiencySecurity,
+                    budget: budget,
+                    dashboard_option: dashboardOption,
+                    usage_option: usageOption,
+                    custom_request: customRequest,
+                    providers: selectedProviders,
+                    use_cases: selectedUseCases // ✅ finalmente incluso
+                }]);
+
+            if (error) {
+                console.error("❌ Survey Error:", error);
+                alert("Error submitting survey. Try again.");
+            } else {
+                console.log("🎉 Survey submitted successfully!");
+                console.log("📩 User object:", user);
+                console.log("📩 Sending to email:", user?.email);
+
+                // ✅ Invio email di benvenuto con EmailJS
+                emailjs.send("service_t0omkv5", "template_wsinzl8", {
+                    to_email: user.email
+                })
+                .then(() => {
+                    console.log("📧 Welcome email sent successfully!");
+                })
+                .catch((error) => {
+                    console.error("❌ Failed to send welcome email:", error);
+                });
+
+                window.location.href = "https://apigoal.com/beta_dashboard";
             }
-        } // chiude il try
+        } catch (error) {
+            console.error("❌ Network Error submitting survey:", error);
+            alert("Network error. Please try again later.");
+        }
     }); // chiude il listener del form
+
 }); // chiude DOMContentLoaded
 </script>
 
