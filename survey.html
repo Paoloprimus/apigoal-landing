@@ -311,7 +311,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                 <div style="padding:20px; background-color:white; border-radius:8px; box-shadow:0 4px 8px rgba(0,0,0,0.1); text-align:center; max-width:400px;">
                     <h2 style="color:#e53e3e; margin-bottom:16px;">Access Denied</h2>
                     <p style="margin-bottom:16px;">Authentication system not available. Please try again later.</p>
-                    <a href="https://apigoal.com" style="display:inline-block; background-color:#3182ce; color:white; padding:8px 16px; border-radius:4px; text-decoration:none;">Go to Homepage</a>
+                    <a href="https://apigoal.com/index.html" style="display:inline-block; background-color:#3182ce; color:white; padding:8px 16px; border-radius:4px; text-decoration:none;">Go to Homepage</a>
                 </div>
             </div>
         `;
@@ -337,7 +337,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                     <div style="padding:20px; background-color:white; border-radius:8px; box-shadow:0 4px 8px rgba(0,0,0,0.1); text-align:center; max-width:400px;">
                         <h2 style="color:#e53e3e; margin-bottom:16px;">Access Denied</h2>
                         <p style="margin-bottom:16px;">You must log in and verify your account to access this page.</p>
-                        <a href="https://apigoal.com/login?redirect=${encodeURIComponent(window.location.href)}" style="display:inline-block; background-color:#3182ce; color:white; padding:8px 16px; border-radius:4px; text-decoration:none;">Go to Login</a>
+                        <a href="https://apigoal.com/index.html" style="display:inline-block; background-color:#3182ce; color:white; padding:8px 16px; border-radius:4px; text-decoration:none;">Go to Homepage</a>
                     </div>
                 </div>
             `;
@@ -372,15 +372,16 @@ document.addEventListener("DOMContentLoaded", async function() {
                 <div style="padding:20px; background-color:white; border-radius:8px; box-shadow:0 4px 8px rgba(0,0,0,0.1); text-align:center; max-width:400px;">
                     <h2 style="color:#e53e3e; margin-bottom:16px;">Error</h2>
                     <p style="margin-bottom:16px;">An error occurred while checking your access. Please try again later.</p>
-                    <a href="https://apigoal.com" style="display:inline-block; background-color:#3182ce; color:white; padding:8px 16px; border-radius:4px; text-decoration:none;">Go to Homepage</a>
+                    <a href="https://apigoal.com/index.html" style="display:inline-block; background-color:#3182ce; color:white; padding:8px 16px; border-radius:4px; text-decoration:none;">Go to Homepage</a>
                 </div>
             </div>
         `;
         return;
     }
 
-	
- // Disclaimer modal logic
+    // Il resto del codice verrà eseguito solo se l'utente è autenticato e verificato
+    
+    // Disclaimer modal logic
     document.getElementById("openDisclaimer").addEventListener("click", function () {
         document.getElementById("disclaimerModal").classList.remove("hidden");
     });
