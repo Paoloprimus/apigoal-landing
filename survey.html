@@ -303,8 +303,18 @@
 document.addEventListener("DOMContentLoaded", async function() {
     console.log("📌 Document loaded. Initializing Supabase...");
 
+    // Blocca immediatamente l'accesso se Supabase non è caricato
     if (typeof supabase === 'undefined') {
         console.error("❌ Supabase library not loaded.");
+        document.body.innerHTML = `
+            <div style="display:flex; justify-content:center; align-items:center; height:100vh; background-color:#f5f5f5;">
+                <div style="padding:20px; background-color:white; border-radius:8px; box-shadow:0 4px 8px rgba(0,0,0,0.1); text-align:center; max-width:400px;">
+                    <h2 style="color:#e53e3e; margin-bottom:16px;">Access Denied</h2>
+                    <p style="margin-bottom:16px;">Authentication system not available. Please try again later.</p>
+                    <a href="https://apigoal.com" style="display:inline-block; background-color:#3182ce; color:white; padding:8px 16px; border-radius:4px; text-decoration:none;">Go to Homepage</a>
+                </div>
+            </div>
+        `;
         return;
     }
 
@@ -314,51 +324,63 @@ document.addEventListener("DOMContentLoaded", async function() {
     const supabaseClient = supabase.createClient(supabaseUrl, supabaseAnonKey);
     console.log("✅ Supabase client initialized:", supabaseClient);
 
-    async function checkSurveyStatus() {
-        try {
-            console.log("🔍 Checking user authentication...");
-            const { data: { user }, error } = await supabaseClient.auth.getUser();
+    // Verifica autenticazione utente prima di qualsiasi altra operazione
+    try {
+        console.log("🔍 Checking user authentication...");
+        const { data: { user }, error } = await supabaseClient.auth.getUser();
 
-            if (error) {
-                console.error("⚠️ Error retrieving user:", error);
-                return;
-            }
-
-	if (error || !user || !user.email_confirmed_at) {
-	    console.warn("🚫 No user logged in. Redirecting...");
-	    window.location.href = 'https://apigoal.com/login?redirect=' + encodeURIComponent(window.location.href);
-	    return;
-	}
-
-
-            console.log("✅ User found:", user);
-
-            const { data, error: surveyError } = await supabaseClient
-                .from('beta_survey')
-                .select('*')
-                .eq('user_id', user.id);
-
-            if (surveyError) {
-                console.error("⚠️ Failed to fetch survey data:", surveyError);
-                return;
-            }
-
-            console.log("📊 Survey data:", data);
-
-            if (data.length > 0) {
-                console.log("🔄 User already completed survey, redirecting...");
-                window.location.href = "https://apigoal.com/beta_dashboard";
-            }
-        } catch (error) {
-            console.error("❌ Survey Check Error:", error);
+        // Mostra l'accesso negato se c'è un errore, o l'utente non esiste, o non ha confermato l'email
+        if (error || !user || !user.last_sign_in_at) {
+            console.warn("🚫 No verified user logged in. Blocking access...");
+            document.body.innerHTML = `
+                <div style="display:flex; justify-content:center; align-items:center; height:100vh; background-color:#f5f5f5;">
+                    <div style="padding:20px; background-color:white; border-radius:8px; box-shadow:0 4px 8px rgba(0,0,0,0.1); text-align:center; max-width:400px;">
+                        <h2 style="color:#e53e3e; margin-bottom:16px;">Access Denied</h2>
+                        <p style="margin-bottom:16px;">You must log in and verify your account to access this page.</p>
+                        <a href="https://apigoal.com/login?redirect=${encodeURIComponent(window.location.href)}" style="display:inline-block; background-color:#3182ce; color:white; padding:8px 16px; border-radius:4px; text-decoration:none;">Go to Login</a>
+                    </div>
+                </div>
+            `;
+            // Importante: interrompe completamente l'esecuzione del resto del codice
+            return;
         }
+
+        console.log("✅ User found:", user);
+
+        // Continua con la verifica dello stato del sondaggio solo se l'utente è autenticato
+        const { data, error: surveyError } = await supabaseClient
+            .from('beta_survey')
+            .select('*')
+            .eq('user_id', user.id);
+
+        if (surveyError) {
+            console.error("⚠️ Failed to fetch survey data:", surveyError);
+            return;
+        }
+
+        console.log("📊 Survey data:", data);
+
+        if (data.length > 0) {
+            console.log("🔄 User already completed survey, redirecting...");
+            window.location.href = "https://apigoal.com/beta_dashboard";
+            return;
+        }
+    } catch (error) {
+        console.error("❌ Authentication Check Error:", error);
+        document.body.innerHTML = `
+            <div style="display:flex; justify-content:center; align-items:center; height:100vh; background-color:#f5f5f5;">
+                <div style="padding:20px; background-color:white; border-radius:8px; box-shadow:0 4px 8px rgba(0,0,0,0.1); text-align:center; max-width:400px;">
+                    <h2 style="color:#e53e3e; margin-bottom:16px;">Error</h2>
+                    <p style="margin-bottom:16px;">An error occurred while checking your access. Please try again later.</p>
+                    <a href="https://apigoal.com" style="display:inline-block; background-color:#3182ce; color:white; padding:8px 16px; border-radius:4px; text-decoration:none;">Go to Homepage</a>
+                </div>
+            </div>
+        `;
+        return;
     }
 
-    await checkSurveyStatus();
-	// }); // 👈 chiusura corretta del DOMContentLoaded
-
 	
-    // Disclaimer modal logic
+ // Disclaimer modal logic
     document.getElementById("openDisclaimer").addEventListener("click", function () {
         document.getElementById("disclaimerModal").classList.remove("hidden");
     });
