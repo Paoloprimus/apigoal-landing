@@ -61,14 +61,14 @@
                 
                 if (error) {
                     console.log("Errore Supabase:", error);
-                    document.getElementById("beta-form").classList.add("hidden");
-                    document.getElementById("success-message").classList.remove("hidden");
-
+                    message.innerText = `❌ Something went wrong: ${error.message}`;
+                    message.classList.add("text-red-600");
                 } else {
                     console.log("Registrazione completata:", data);
-                    message.innerText = "✅ Thank you! Check your email for verification.";
-                    message.classList.add("text-green-600");
+                    document.getElementById("beta-form").classList.add("hidden");
+                    document.getElementById("success-message").classList.remove("hidden");
                 }
+
             } catch (error) {
                 console.log("Errore catch:", error);
                 message.innerText = "❌ Network error. Try again later.";
