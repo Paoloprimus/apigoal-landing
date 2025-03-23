@@ -465,28 +465,28 @@ document.addEventListener("DOMContentLoaded", async function() {
                 alert("Error submitting survey. Try again.");
             } else {
 		    
-		// MODIFICA TEMPORANEA PER DEBUG EMAILJS
+		// MODIFICA DEFINITIVA EMAILJS CON REDIRECT DOPO INVIO
 		emailjs.send("service_t0omkv5", "template_wsinzl8", {
 		    to_email: user.email,
 		    email: user.email
 		})
 		.then((response) => {
 		    console.log("📧 EmailJS success:", response.status, response.text);
+		    window.location.href = "https://apigoal.com/beta_dashboard";
 		})
 		.catch((error) => {
 		    console.error("❌ EmailJS error:", JSON.stringify(error));
+		    alert("⚠️ Error sending confirmation email. Please contact support.");
+		    window.location.href = "https://apigoal.com/beta_dashboard";
 		});
-
-                window.location.href = "https://apigoal.com/beta_dashboard";
-            }
-        } catch (error) {
-            console.error("❌ Network Error submitting survey:", error);
-            alert("Network error. Please try again later.");
-        }
-    });
-}); // ✅ chiusura DOMContentLoaded
-</script>
-
+		            
+		} catch (error) {
+		    console.error("❌ Network Error submitting survey:", error);
+		    alert("Network error. Please try again later.");
+		}
+		});
+		}); // ✅ chiusura DOMContentLoaded
+		</script>
 
 </body>
 </html>
