@@ -67,115 +67,103 @@
         </div>
     </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", async function() {
-            console.log("📌 Document loaded. Initializing Supabase...");
+<script>
+    document.addEventListener("DOMContentLoaded", async function() {
+        console.log("📌 Document loaded. Initializing Supabase...");
 
-            if (typeof supabase === 'undefined') {
-                console.error("❌ Supabase library not loaded.");
-                return;
-            }
+        if (typeof supabase === 'undefined') {
+            console.error("❌ Supabase library not loaded.");
+            return;
+        }
 
-            const supabaseUrl = 'https://wenndkgeebooikzikhew.supabase.co';
-            const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlbm5ka2dlZWJvb2lremlraGV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIwMjk0NjUsImV4cCI6MjA1NzYwNTQ2NX0.4_Pnkffn1mPUkHyYfk6bDmdWk2L14LTV5hEEvDaWu8c';
-            const supabaseClient = supabase.createClient(supabaseUrl, supabaseAnonKey);
-            
-            // Verifica se l'utente è già autenticato
-            async function checkSession() {
-                try {
-                    const { data: { user }, error } = await supabaseClient.auth.getUser();
-                    
-                    if (error || !user || !user.last_sign_in_at) {
-                        // Utente non autenticato, mostra il form di login
-                        document.getElementById('login-container').classList.remove('hidden');
-                        document.getElementById('dashboard-content').classList.add('hidden');
-                    } else {
-                        // Verifica se l'utente ha completato il sondaggio
-                        const { data, error: surveyError } = await supabaseClient
-                            .from('beta_survey')
-                            .select('*')
-                            .eq('user_id', user.id);
-                        
-                        if (surveyError) {
-                            console.error("⚠️ Failed to fetch survey data:", surveyError);
-                            return;
-                        }
-                        
-                        if (data.length === 0) {
-                            // L'utente non ha completato il sondaggio, reindirizza alla pagina del sondaggio
-                            window.location.href = "https://apigoal.com/survey.html";
-                            return;
-                        }
-                        
-                        // Utente autenticato e ha completato il sondaggio, mostra la dashboard
-                        document.getElementById('login-container').classList.add('hidden');
-                        document.getElementById('dashboard-content').classList.remove('hidden');
-                    }
-                } catch (error) {
-                    console.error("❌ Session Check Error:", error);
-                }
-            }
-            
-            // Gestione del form di login
-            document.getElementById('login-form').addEventListener('submit', async function(event) {
-                event.preventDefault();
-                
-                const email = document.getElementById('email').value;
-                const password = document.getElementById('password').value;
-                
-                try {
-                    const { data, error } = await supabaseClient.auth.signInWithPassword({
-                        email: email,
-                        password: password
-                    });
-                    
-                    if (error) {
-                        console.error("❌ Login Error:", error);
-                        document.getElementById('error-message').classList.remove('hidden');
-                        return;
-                    }
-                    
-                    // Verifica se l'utente ha completato il sondaggio
-                    const { data: surveyData, error: surveyError } = await supabaseClient
+        const supabaseUrl = 'https://wenndkgeebooikzikhew.supabase.co';
+        const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlbm5ka2dlZWJvb2lremlraGV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIwMjk0NjUsImV4cCI6MjA1NzYwNTQ2NX0.4_Pnkffn1mPUkHyYfk6bDmdWk2L14LTV5hEEvDaWu8c';
+        const supabaseClient = supabase.createClient(supabaseUrl, supabaseAnonKey);
+
+        // Verifica se l'utente è già autenticato
+        async function checkSession() {
+            try {
+                const { data: { user }, error } = await supabaseClient.auth.getUser();
+
+                if (error || !user || !user.last_sign_in_at) {
+                    document.getElementById('login-container').classList.remove('hidden');
+                    document.getElementById('dashboard-content').classList.add('hidden');
+                } else {
+                    // Modifica: Verifica esclusivamente se esiste il campo created_at
+                    const { data, error: surveyError } = await supabaseClient
                         .from('beta_survey')
-                        .select('*')
-                        .eq('user_id', data.user.id);
-                    
-                    if (surveyError) {
-                        console.error("⚠️ Failed to fetch survey data:", surveyError);
-                        return;
-                    }
-                    
-                    if (surveyData.length === 0) {
-                        // L'utente non ha completato il sondaggio, reindirizza alla pagina del sondaggio
+                        .select('created_at')
+                        .eq('user_id', user.id)
+                        .single();
+
+                    if (surveyError || !data || !data.created_at) {
                         window.location.href = "https://apigoal.com/survey.html";
                         return;
                     }
-                    
-                    // Login riuscito e l'utente ha completato il sondaggio, mostra la dashboard
+
                     document.getElementById('login-container').classList.add('hidden');
                     document.getElementById('dashboard-content').classList.remove('hidden');
-                    document.getElementById('error-message').classList.add('hidden');
-                } catch (error) {
+                }
+            } catch (error) {
+                console.error("❌ Session Check Error:", error);
+            }
+        }
+
+        // Gestione del form di login
+        document.getElementById('login-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const { data, error } = await supabaseClient.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+
+                if (error) {
                     console.error("❌ Login Error:", error);
                     document.getElementById('error-message').classList.remove('hidden');
+                    return;
                 }
-            });
-            
-            // Gestione del logout
-            document.getElementById('logout-button').addEventListener('click', async function() {
-                try {
-                    await supabaseClient.auth.signOut();
-                    document.getElementById('login-container').classList.remove('hidden');
-                    document.getElementById('dashboard-content').classList.add('hidden');
-                } catch (error) {
-                    console.error("❌ Logout Error:", error);
+
+                // Modifica: Verifica esclusivamente se esiste il campo created_at
+                const { data: surveyData, error: surveyError } = await supabaseClient
+                    .from('beta_survey')
+                    .select('created_at')
+                    .eq('user_id', data.user.id)
+                    .single();
+
+                if (surveyError || !surveyData || !surveyData.created_at) {
+                    window.location.href = "https://apigoal.com/survey.html";
+                    return;
                 }
-            });
-            
-            // Controlla la sessione all'avvio
-            await checkSession();
+
+                document.getElementById('login-container').classList.add('hidden');
+                document.getElementById('dashboard-content').classList.remove('hidden');
+                document.getElementById('error-message').classList.add('hidden');
+            } catch (error) {
+                console.error("❌ Login Error:", error);
+                document.getElementById('error-message').classList.remove('hidden');
+            }
         });
-    </script>
+
+        // Gestione del logout
+        document.getElementById('logout-button').addEventListener('click', async function() {
+            try {
+                await supabaseClient.auth.signOut();
+                document.getElementById('login-container').classList.remove('hidden');
+                document.getElementById('dashboard-content').classList.add('hidden');
+            } catch (error) {
+                console.error("❌ Logout Error:", error);
+            }
+        });
+
+        // Controlla la sessione all'avvio
+        await checkSession();
+    });
+</script>
+    
 </body>
 </html>
