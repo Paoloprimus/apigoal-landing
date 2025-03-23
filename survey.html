@@ -324,10 +324,20 @@ document.addEventListener("DOMContentLoaded", async function() {
                 return;
             }
 
-            if (!user) {
-                console.warn("🚫 No user logged in, staying on survey page.");
-                return;  // NON REDIRECTARE, così vediamo se il problema è qui
-            }
+	if (!user) {
+	    console.warn("🚫 No user logged in. Redirecting...");
+	    document.body.innerHTML = `
+	        <div class="flex items-center justify-center min-h-screen bg-gradient-to-b from-gray-100 to-gray-300 text-gray-900">
+	            <div class="bg-white shadow-xl rounded-lg p-8 max-w-md text-center">
+	                <h2 class="text-xl font-bold text-red-600 mb-4">Access Denied</h2>
+	                <p class="mb-4">You must log in and verify your email to access this page.</p>
+	                <a href="https://apigoal.com" class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Go to Homepage</a>
+	            </div>
+	        </div>
+	    `;
+	    return;
+	}
+
 
             console.log("✅ User found:", user);
 
