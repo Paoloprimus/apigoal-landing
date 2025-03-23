@@ -267,6 +267,36 @@
                 Join Beta-APIGOAL Dashboard
             </button>
         </form>
+	    
+	<!-- Disclaimer Modal -->
+	<div id="disclaimerModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+	  <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full p-6 relative overflow-y-auto max-h-[90vh]">
+	
+	    <!-- Close button -->
+	    <button id="closeDisclaimer" class="absolute top-2 right-3 text-gray-500 hover:text-black text-xl font-bold">&times;</button>
+	
+	    <h2 class="text-xl font-bold text-center text-blue-700 mb-4">APIGOAL – Beta Version Disclaimer</h2>
+	
+	    <div class="text-sm space-y-2">
+	      <p>This version is under active development and is provided step by step “as is”, without any express or implied warranties. The application may contain bugs, errors, or incomplete features. By using this beta version, you agree to the following terms:</p>
+	
+	      <ul class="list-disc list-inside pl-4 space-y-1">
+	        <li><strong>Use at your own risk</strong>: We disclaim any liability for data loss, service interruptions, or other malfunctions.</li>
+	        <li><strong>Data collection</strong>: We may collect data about your interactions to improve the service. No sensitive information will be stored or shared.</li>
+	        <li><strong>Voluntary feedback</strong>: Your feedback may be freely used to improve the app.</li>
+	        <li><strong>Confidentiality</strong>: Do not publicly share technical details, screenshots, or code without permission.</li>
+	        <li><strong>Changes and suspension</strong>: Access may be modified, suspended, or terminated at any time without notice.</li>
+	      </ul>
+	    </div>
+	
+	    <div class="mt-6 text-center">
+	      <button id="closeDisclaimerBottom" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+	        Close
+	      </button>
+	    </div>
+	  </div>
+	</div>
+	    
     </div>
 
 <script>
@@ -324,6 +354,27 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     await checkSurveyStatus();
 
+	        console.error("❌ Network Error:", error);
+	        alert("Network error. Try again later.");
+	    }
+	});
+});
+
+	// Disclaimer modal logic
+document.getElementById("openDisclaimer").addEventListener("click", function () {
+    document.getElementById("disclaimerModal").classList.remove("hidden");
+});
+
+document.getElementById("closeDisclaimer").addEventListener("click", function () {
+    document.getElementById("disclaimerModal").classList.add("hidden");
+});
+
+document.getElementById("closeDisclaimerBottom").addEventListener("click", function () {
+    document.getElementById("disclaimerModal").classList.add("hidden");
+});
+
+	
+	
 	document.getElementById("survey-form").addEventListener("submit", async function(event) {
 	    event.preventDefault();
 	
@@ -425,13 +476,8 @@ document.addEventListener("DOMContentLoaded", async function() {
 	            window.location.href = "https://apigoal.com/beta_dashboard";
 	        }
 	    } catch (error) {
-	        console.error("❌ Network Error:", error);
-	        alert("Network error. Try again later.");
-	    }
-	});
-});
-</script>
 
+</script>
 
 </body>
 </html>
