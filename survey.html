@@ -394,99 +394,97 @@ document.addEventListener("DOMContentLoaded", async function() {
         document.getElementById("disclaimerModal").classList.add("hidden");
     });
 
-    // Survey form submit
-    document.getElementById("survey-form").addEventListener("submit", async function(event) {
-        event.preventDefault();
-
-        console.log("📝 Submitting survey...");
-
-        const { data: { user }, error } = await supabaseClient.auth.getUser();
-        if (!user) {
-            alert("Error: User not logged in. Please refresh the page.");
-            return;
-        }
-
-        const rankAutoSwitch = document.querySelector('input[name="rank_auto_switch"]:checked')?.value || null;
-        const rankCostComparison = document.querySelector('input[name="rank_cost_comparison"]:checked')?.value || null;
-        const rankCostMonitoring = document.querySelector('input[name="rank_cost_monitoring"]:checked')?.value || null;
-        const rankEfficiencySecurity = document.querySelector('input[name="rank_efficiency_security"]:checked')?.value || null;
-        const budget = document.querySelector('input[name="budget"]:checked')?.value || null;
-        const dashboardOption = document.querySelector('input[name="dashboard_option"]:checked')?.value || null;
-        const usageOption = document.querySelector('input[name="usage_option"]:checked')?.value || null;
-        const customRequest = document.getElementById("custom_request").value.trim();
-        const selectedProviders = Array.from(document.querySelectorAll('input[name="providers"]:checked')).map(input => input.value);
-        const selectedUseCases = Array.from(document.querySelectorAll('input[name="use_cases"]:checked')).map(input => input.value);
-
-        if (!rankAutoSwitch || !rankCostComparison || !rankCostMonitoring || !rankEfficiencySecurity) {
-            alert("⚠️ Please rank all features before submitting.");
-            return;
-        }
-
-        const disclaimerAccepted = document.getElementById("disclaimer_check").checked;
-        if (!disclaimerAccepted) {
-            alert("⚠️ You must accept the APIGOAL Beta Disclaimer to continue.");
-            return;
-        }
-
-        if (!budget) {
-            alert("⚠️ Please select your monthly AI API budget.");
-            return;
-        }
-
-        if (selectedProviders.length === 0) {
-            alert("⚠️ Please select at least one AI API provider.");
-            return;
-        }
-
-        if (selectedUseCases.length === 0) {
-            alert("⚠️ Please select at least one use case.");
-            return;
-        }
-
-        try {
-            const { error } = await supabaseClient
-                .from('beta_survey')
-                .insert([{
-                    user_id: user.id,
-                    rank_auto_switch: rankAutoSwitch,
-                    rank_cost_comparison: rankCostComparison,
-                    rank_cost_monitoring: rankCostMonitoring,
-                    rank_efficiency_security: rankEfficiencySecurity,
-                    budget: budget,
-                    dashboard_option: dashboardOption,
-                    usage_option: usageOption,
-                    custom_request: customRequest,
-                    providers: selectedProviders,
-                    use_cases: selectedUseCases
-                }]);
-
-            if (error) {
-                console.error("❌ Survey Error:", error);
-                alert("Error submitting survey. Try again.");
-            } else {
-		    
-		// MODIFICA DEFINITIVA EMAILJS CON REDIRECT DOPO INVIO
-		emailjs.send("service_t0omkv5", "template_wsinzl8", {
-		    to_email: user.email,
-		    email: user.email
-		})
-		.then((response) => {
-		    console.log("📧 EmailJS success:", response.status, response.text);
-		    window.location.href = "https://apigoal.com/beta_dashboard";
-		})
-		.catch((error) => {
-		    console.error("❌ EmailJS error:", JSON.stringify(error));
-		    alert("⚠️ Error sending confirmation email. Please contact support.");
-		    window.location.href = "https://apigoal.com/beta_dashboard";
-		});
-		            
-		} catch (error) {
-		    console.error("❌ Network Error submitting survey:", error);
-		    alert("Network error. Please try again later.");
-		}
-		});
-		}); // ✅ chiusura DOMContentLoaded
-		</script>
+	// Survey form submit
+	document.getElementById("survey-form").addEventListener("submit", async function(event) {
+	    event.preventDefault();
+	
+	    const { data: { user }, error } = await supabaseClient.auth.getUser();
+	    if (!user) {
+	        alert("Error: User not logged in. Please refresh the page.");
+	        return;
+	    }
+	
+	    const rankAutoSwitch = document.querySelector('input[name="rank_auto_switch"]:checked')?.value || null;
+	    const rankCostComparison = document.querySelector('input[name="rank_cost_comparison"]:checked')?.value || null;
+	    const rankCostMonitoring = document.querySelector('input[name="rank_cost_monitoring"]:checked')?.value || null;
+	    const rankEfficiencySecurity = document.querySelector('input[name="rank_efficiency_security"]:checked')?.value || null;
+	    const budget = document.querySelector('input[name="budget"]:checked')?.value || null;
+	    const dashboardOption = document.querySelector('input[name="dashboard_option"]:checked')?.value || null;
+	    const usageOption = document.querySelector('input[name="usage_option"]:checked')?.value || null;
+	    const customRequest = document.getElementById("custom_request").value.trim();
+	    const selectedProviders = Array.from(document.querySelectorAll('input[name="providers"]:checked')).map(input => input.value);
+	    const selectedUseCases = Array.from(document.querySelectorAll('input[name="use_cases"]:checked')).map(input => input.value);
+	
+	    if (!rankAutoSwitch || !rankCostComparison || !rankCostMonitoring || !rankEfficiencySecurity) {
+	        alert("⚠️ Please rank all features before submitting.");
+	        return;
+	    }
+	
+	    const disclaimerAccepted = document.getElementById("disclaimer_check").checked;
+	    if (!disclaimerAccepted) {
+	        alert("⚠️ You must accept the APIGOAL Beta Disclaimer to continue.");
+	        return;
+	    }
+	
+	    if (!budget) {
+	        alert("⚠️ Please select your monthly AI API budget.");
+	        return;
+	    }
+	
+	    if (selectedProviders.length === 0) {
+	        alert("⚠️ Please select at least one AI API provider.");
+	        return;
+	    }
+	
+	    if (selectedUseCases.length === 0) {
+	        alert("⚠️ Please select at least one use case.");
+	        return;
+	    }
+	
+	    try {
+	        const { error } = await supabaseClient
+	            .from('beta_survey')
+	            .insert([{
+	                user_id: user.id,
+	                rank_auto_switch: rankAutoSwitch,
+	                rank_cost_comparison: rankCostComparison,
+	                rank_cost_monitoring: rankCostMonitoring,
+	                rank_efficiency_security: rankEfficiencySecurity,
+	                budget: budget,
+	                dashboard_option: dashboardOption,
+	                usage_option: usageOption,
+	                custom_request: customRequest,
+	                providers: selectedProviders,
+	                use_cases: selectedUseCases
+	            }]);
+	
+	        if (error) {
+	            console.error("❌ Survey Error:", error);
+	            alert("Error submitting survey. Try again.");
+	        } else {
+	            // Invio Email con EmailJS e redirect solo dopo invio email
+	            emailjs.send("service_t0omkv5", "template_wsinzl8", {
+	                to_email: user.email,
+	                email: user.email
+	            })
+	            .then((response) => {
+	                console.log("📧 EmailJS success:", response.status, response.text);
+	                window.location.href = "https://apigoal.com/beta_dashboard";
+	            })
+	            .catch((error) => {
+	                console.error("❌ EmailJS error:", JSON.stringify(error));
+	                alert("⚠️ Error sending confirmation email. Please contact support.");
+	                window.location.href = "https://apigoal.com/beta_dashboard";
+	            });
+	        }
+	    } catch (error) {
+	        console.error("❌ Network Error submitting survey:", error);
+	        alert("Network error. Please try again later.");
+	    }
+	}); // Chiusura event listener submit
+	
+	}); // Chiusura DOMContentLoaded
+</script>
 
 </body>
 </html>
