@@ -353,13 +353,9 @@ document.addEventListener("DOMContentLoaded", async function() {
     }
 
     await checkSurveyStatus();
+}); // 👈 chiusura corretta del DOMContentLoaded
 
-	        console.error("❌ Network Error:", error);
-	        alert("Network error. Try again later.");
-	    }
-	});
-});
-
+	
 	// Disclaimer modal logic
 document.getElementById("openDisclaimer").addEventListener("click", function () {
     document.getElementById("disclaimerModal").classList.remove("hidden");
