@@ -18,60 +18,65 @@
 
             <form id="beta-form" class="w-full">
                 <input type="email" id="email" name="email" placeholder="Enter your email" required class="w-full p-2 border rounded-lg mb-4">
+                <input type="password" id="password" name="password" placeholder="Choose a password (min. 6 chars)" minlength="6" required class="w-full p-2 border rounded-lg mb-4">
                 <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">Join the Beta</button>
             </form>
 
+            <div id="success-message" class="hidden mt-6 flex items-center justify-center text-green-600 font-semibold">
+                <svg class="w-6 h-6 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                Thank you! Check your email to verify your address.
+            </div>
+            
             <p id="message" class="text-sm text-gray-600 mt-4"></p>
         </div>
     </div>
 
     <script>
-// Script Supabase corretto per moduli ES
-console.log("Inizio script");
-const supabaseUrl = 'https://wenndkgeebooikzikhew.supabase.co';
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlbm5ka2dlZWJvb2lremlraGV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIwMjk0NjUsImV4cCI6MjA1NzYwNTQ2NX0.4_Pnkffn1mPUkHyYfk6bDmdWk2L14LTV5hEEvDaWu8c';
+    // Corrected Supabase script for ES modules
+    console.log("Inizio script");
+    const supabaseUrl = 'https://wenndkgeebooikzikhew.supabase.co';
+    const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlbm5ka2dlZWJvb2lremlraGV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIwMjk0NjUsImV4cCI6MjA1NzYwNTQ2NX0.4_Pnkffn1mPUkHyYfk6bDmdWk2L14LTV5hEEvDaWu8c';
 
-// Usa la versione 2 di Supabase con supporto corretto
-document.addEventListener('DOMContentLoaded', function() {
-    // Accedi correttamente all'oggetto Supabase
-    const client = supabase.createClient(supabaseUrl, supabaseAnonKey);
-    console.log("Client Supabase inizializzato", client);
-    
-    document.getElementById("beta-form").addEventListener("submit", async function(event) {
-        console.log("Evento submit intercettato");
-        event.preventDefault();
-        const email = document.getElementById("email").value;
-        console.log("Email:", email);
-        const message = document.getElementById("message");
+    // Using Supabase version 2 with proper support
+    document.addEventListener('DOMContentLoaded', function() {
+        const client = supabase.createClient(supabaseUrl, supabaseAnonKey);
+        console.log("Client Supabase inizializzato", client);
         
-        try {
-            // Registra l'utente su Supabase Auth con options correttamente strutturate
-            const { data, error } = await client.auth.signUp({
-                email: email,
-                password: 'temporary-password',
-                options: {
-                    emailRedirectTo: 'https://apigoal.com/survey.html'
-                }
-            });
+        document.getElementById("beta-form").addEventListener("submit", async function(event) {
+            console.log("Evento submit intercettato");
+            event.preventDefault();
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+            const message = document.getElementById("message");
             
-            if (error) {
-                console.log("Errore Supabase:", error);
-                message.innerText = `❌ Something went wrong: ${error.message}`;
-                message.classList.add("text-red-600");
-            } else {
-                console.log("Registrazione completata:", data);
+            try {
+                const { data, error } = await client.auth.signUp({
+                    email: email,
+                    password: password,
+                    options: {
+                        emailRedirectTo: 'https://apigoal.com/survey.html'
+                    }
+                });
+                
+                if (error) {
+                    console.log("Errore Supabase:", error);
+                    message.innerText = `❌ Something went wrong: ${error.message}`;
+                    message.classList.add("text-red-600");
+                } else {
+                    console.log("Registrazione completata:", data);
+                    document.getElementById("beta-form").classList.add("hidden");
+                    document.getElementById("success-message").classList.remove("hidden");
+                }
 
-                // Mostra messaggio di successo
-                message.innerText = "✅ Thank you! Check your email for verification.";
-                message.classList.add("text-green-600");
+            } catch (error) {
+                console.log("Errore catch:", error);
+                message.innerText = "❌ Network error. Try again later.";
+                message.classList.add("text-red-600");
             }
-        } catch (error) {
-            console.log("Errore catch:", error);
-            message.innerText = "❌ Network error. Try again later.";
-            message.classList.add("text-red-600");
-        }
+        });
     });
-});
     </script>
 </body>
 </html>
