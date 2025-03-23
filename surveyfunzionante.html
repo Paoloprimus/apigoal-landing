@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ns<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -6,10 +6,10 @@
     <title>Welcome to APIGOAL!</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-    <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 	<script type="text/javascript">
   	(function() {
-    	emailjs.init("nGUt-2a43ExB954uH"); // <-- Sostituisci con la tua Public Key
+    	emailjs.init("nGUt-2a43ExB954uH"); 
   	})();
 	</script>
 </head>
@@ -27,7 +27,6 @@
                 Please complete this survey to join us. All beta program details in the dashboard after submission. Thank you!
             </p>
             <p class="text-sm text-green-600 mt-2">
-
             </p>
         </div>
 
@@ -155,7 +154,7 @@
                     Ngrok
                 </label>
 
-<label class="flex items-center">
+		<label class="flex items-center">
                     <input type="checkbox" name="providers" value="mistral" class="mr-2">
                     Mistral AI
                 </label>
@@ -246,24 +245,75 @@
 		<textarea id="custom_request" name="custom_request" class="w-full p-2 border 			rounded-lg mt-1 mb-4" 
           	placeholder="Write here (optional)..."></textarea>
 
-            <!-- Messaggio di contatto -->
+            <!-- Contact message -->
             <p class="text-sm text-gray-600 mb-4">
                 Feel free to contact us at <a href="mailto:info@apigoal.com" class="text-blue-600 underline">info@apigoal.com</a> for any requests.  
                 Thank you for your availability!
             </p>
 
+		<div class="mb-4 flex items-start space-x-2">
+		  <input type="checkbox" id="disclaimer_check" class="mt-1" required>
+		  <label for="disclaimer_check" class="text-sm">
+		    I have read and accept the conditions of the
+		    <button type="button" id="openDisclaimer" class="text-blue-600 underline font-medium">
+		      APIGOAL Beta Version Disclaimer
+		    </button>
+		  </label>
+		</div>
+		
+				
             <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">
-                Join Beta-APIGOAL Dashboard
+                Join APIGOAL Beta-Dashboard
             </button>
         </form>
+	    
+	<!-- Disclaimer Modal -->
+	<div id="disclaimerModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+	  <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full p-6 relative overflow-y-auto max-h-[90vh]">
+	
+	    <!-- Close button -->
+	    <button id="closeDisclaimer" class="absolute top-2 right-3 text-gray-500 hover:text-black text-xl font-bold">&times;</button>
+	
+	    <h2 class="text-xl font-bold text-center text-blue-700 mb-4">APIGOAL – Beta Version Disclaimer</h2>
+	
+	    <div class="text-sm space-y-2">
+	      <p>This version is under active development and is provided step by step “as is”, without any express or implied warranties. The application may contain bugs, errors, or incomplete features. By using this beta version, you agree to the following terms:</p>
+	
+	      <ul class="list-disc list-inside pl-4 space-y-1">
+	        <li><strong>Use at your own risk</strong>: We disclaim any liability for data loss, service interruptions, or other malfunctions.</li>
+	        <li><strong>Data collection</strong>: We may collect data about your interactions to improve the service. No sensitive information will be stored or shared.</li>
+	        <li><strong> Feedback and suggestions</strong>: Your feedback and suggestions may be freely used to improve the app.</li>
+	        <li><strong>Confidentiality</strong>: Do not publicly share technical details or code without permission.</li>
+	        <li><strong>Changes and suspension</strong>: Access may be suspended or terminated with prior notice sent to the email address provided.</li>
+	      </ul>
+	    </div>
+	
+	    <div class="mt-6 text-center">
+	      <button id="closeDisclaimerBottom" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+	        Close
+	      </button>
+	    </div>
+	  </div>
+	</div>
+	    
     </div>
 
 <script>
 document.addEventListener("DOMContentLoaded", async function() {
     console.log("📌 Document loaded. Initializing Supabase...");
 
+    // Immediately block access if Supabase is not loaded
     if (typeof supabase === 'undefined') {
         console.error("❌ Supabase library not loaded.");
+        document.body.innerHTML = `
+            <div style="display:flex; justify-content:center; align-items:center; height:100vh; background-color:#f5f5f5;">
+                <div style="padding:20px; background-color:white; border-radius:8px; box-shadow:0 4px 8px rgba(0,0,0,0.1); text-align:center; max-width:400px;">
+                    <h2 style="color:#e53e3e; margin-bottom:16px;">Access Denied</h2>
+                    <p style="margin-bottom:16px;">Authentication system not available. Please try again later.</p>
+                    <a href="https://apigoal.com/index.html" style="display:inline-block; background-color:#3182ce; color:white; padding:8px 16px; border-radius:4px; text-decoration:none;">Go to Homepage</a>
+                </div>
+            </div>
+        `;
         return;
     }
 
@@ -273,50 +323,79 @@ document.addEventListener("DOMContentLoaded", async function() {
     const supabaseClient = supabase.createClient(supabaseUrl, supabaseAnonKey);
     console.log("✅ Supabase client initialized:", supabaseClient);
 
-    async function checkSurveyStatus() {
-        try {
-            console.log("🔍 Checking user authentication...");
-            const { data: { user }, error } = await supabaseClient.auth.getUser();
+    // Check user authentication before performing any other operation
+    try {
+        console.log("🔍 Checking user authentication...");
+        const { data: { user }, error } = await supabaseClient.auth.getUser();
 
-            if (error) {
-                console.error("⚠️ Error retrieving user:", error);
-                return;
-            }
-
-            if (!user) {
-                console.warn("🚫 No user logged in, staying on survey page.");
-                return;  // NON REDIRECTARE, così vediamo se il problema è qui
-            }
-
-            console.log("✅ User found:", user);
-
-            const { data, error: surveyError } = await supabaseClient
-                .from('beta_survey')
-                .select('*')
-                .eq('user_id', user.id);
-
-            if (surveyError) {
-                console.error("⚠️ Failed to fetch survey data:", surveyError);
-                return;
-            }
-
-            console.log("📊 Survey data:", data);
-
-            if (data.length > 0) {
-                console.log("🔄 User already completed survey, redirecting...");
-                window.location.href = "https://apigoal.com/beta_dashboard";
-            }
-        } catch (error) {
-            console.error("❌ Survey Check Error:", error);
+        // Mostra l'accesso negato se c'è un errore, o l'utente non esiste, o non ha confermato l'email
+        if (error || !user || !user.last_sign_in_at) {
+            console.warn("🚫 No verified user logged in. Blocking access...");
+            document.body.innerHTML = `
+                <div style="display:flex; justify-content:center; align-items:center; height:100vh; background-color:#f5f5f5;">
+                    <div style="padding:20px; background-color:white; border-radius:8px; box-shadow:0 4px 8px rgba(0,0,0,0.1); text-align:center; max-width:400px;">
+                        <h2 style="color:#e53e3e; margin-bottom:16px;">Access Denied</h2>
+                        <p style="margin-bottom:16px;">You must log in and verify your account to access this page.</p>
+                        <a href="https://apigoal.com/index.html" style="display:inline-block; background-color:#3182ce; color:white; padding:8px 16px; border-radius:4px; text-decoration:none;">Go to Homepage</a>
+                    </div>
+                </div>
+            `;
+            // Important: completely stops execution of the remaining code
+            return;
         }
+
+        console.log("✅ User found:", user);
+
+        // Continue checking survey status only if the user is authenticated
+        const { data, error: surveyError } = await supabaseClient
+            .from('beta_survey')
+            .select('*')
+            .eq('user_id', user.id);
+
+        if (surveyError) {
+            console.error("⚠️ Failed to fetch survey data:", surveyError);
+            return;
+        }
+
+        console.log("📊 Survey data:", data);
+
+        if (data.length > 0) {
+            console.log("🔄 User already completed survey, redirecting...");
+            window.location.href = "https://apigoal.com/beta_dashboard";
+            return;
+        }
+    } catch (error) {
+        console.error("❌ Authentication Check Error:", error);
+        document.body.innerHTML = `
+            <div style="display:flex; justify-content:center; align-items:center; height:100vh; background-color:#f5f5f5;">
+                <div style="padding:20px; background-color:white; border-radius:8px; box-shadow:0 4px 8px rgba(0,0,0,0.1); text-align:center; max-width:400px;">
+                    <h2 style="color:#e53e3e; margin-bottom:16px;">Error</h2>
+                    <p style="margin-bottom:16px;">An error occurred while checking your access. Please try again later.</p>
+                    <a href="https://apigoal.com/index.html" style="display:inline-block; background-color:#3182ce; color:white; padding:8px 16px; border-radius:4px; text-decoration:none;">Go to Homepage</a>
+                </div>
+            </div>
+        `;
+        return;
     }
 
-    await checkSurveyStatus();
+    // The rest of the code will only run if the user is authenticated and verified
+    
+    // Disclaimer modal logic
+    document.getElementById("openDisclaimer").addEventListener("click", function () {
+        document.getElementById("disclaimerModal").classList.remove("hidden");
+    });
 
+    document.getElementById("closeDisclaimer").addEventListener("click", function () {
+        document.getElementById("disclaimerModal").classList.add("hidden");
+    });
+
+    document.getElementById("closeDisclaimerBottom").addEventListener("click", function () {
+        document.getElementById("disclaimerModal").classList.add("hidden");
+    });
+
+	// Survey form submit
 	document.getElementById("survey-form").addEventListener("submit", async function(event) {
 	    event.preventDefault();
-	
-	    console.log("📝 Submitting survey...");
 	
 	    const { data: { user }, error } = await supabaseClient.auth.getUser();
 	    if (!user) {
@@ -324,34 +403,25 @@ document.addEventListener("DOMContentLoaded", async function() {
 	        return;
 	    }
 	
-	    console.log("✅ User found for survey submission:", user);
-	
-	    // Legge i dati dai radio button
 	    const rankAutoSwitch = document.querySelector('input[name="rank_auto_switch"]:checked')?.value || null;
 	    const rankCostComparison = document.querySelector('input[name="rank_cost_comparison"]:checked')?.value || null;
 	    const rankCostMonitoring = document.querySelector('input[name="rank_cost_monitoring"]:checked')?.value || null;
 	    const rankEfficiencySecurity = document.querySelector('input[name="rank_efficiency_security"]:checked')?.value || null;
 	    const budget = document.querySelector('input[name="budget"]:checked')?.value || null;
-	
-	    // Opzioni aggiuntive
 	    const dashboardOption = document.querySelector('input[name="dashboard_option"]:checked')?.value || null;
 	    const usageOption = document.querySelector('input[name="usage_option"]:checked')?.value || null;
 	    const customRequest = document.getElementById("custom_request").value.trim();
+	    const selectedProviders = Array.from(document.querySelectorAll('input[name="providers"]:checked')).map(input => input.value);
+	    const selectedUseCases = Array.from(document.querySelectorAll('input[name="use_cases"]:checked')).map(input => input.value);
 	
-	    // Checkbox
-	    const selectedProviders = Array.from(document.querySelectorAll('input[name="providers"]:checked'))
-	                                   .map(input => input.value);
-	    const selectedUseCases = Array.from(document.querySelectorAll('input[name="use_cases"]:checked'))
-	                                   .map(input => input.value);
-	
-	    // Log per debugging
-	    console.log("🔍 Budget:", budget);
-	    console.log("🔍 Providers:", selectedProviders);
-	    console.log("🔍 Use cases:", selectedUseCases);
-	
-	    // Validazioni
 	    if (!rankAutoSwitch || !rankCostComparison || !rankCostMonitoring || !rankEfficiencySecurity) {
 	        alert("⚠️ Please rank all features before submitting.");
+	        return;
+	    }
+	
+	    const disclaimerAccepted = document.getElementById("disclaimer_check").checked;
+	    if (!disclaimerAccepted) {
+	        alert("⚠️ You must accept the APIGOAL Beta Disclaimer to continue.");
 	        return;
 	    }
 	
@@ -384,37 +454,36 @@ document.addEventListener("DOMContentLoaded", async function() {
 	                usage_option: usageOption,
 	                custom_request: customRequest,
 	                providers: selectedProviders,
-	                use_cases: selectedUseCases // ✅ finalmente incluso
+	                use_cases: selectedUseCases
 	            }]);
 	
 	        if (error) {
 	            console.error("❌ Survey Error:", error);
 	            alert("Error submitting survey. Try again.");
 	        } else {
-	            console.log("🎉 Survey submitted successfully!");
-		    console.log("📩 User object:", user);
-		    console.log("📩 Sending to email:", user?.email);
-    		    // ✅ Invio email di benvenuto con EmailJS
-    		    emailjs.send("service_t0omkv5", "template_wsinzl8", {
-        	    	to_email: user.email
-    		    })
-    		    .then(() => {
-        	    	console.log("📧 Welcome email sent successfully!");
-		    })
-    		    .catch((error) => {
-        		console.error("❌ Failed to send welcome email:", error);
-    		    });
-			
-	            window.location.href = "https://apigoal.com/beta_dashboard";
+	            // Sending email via EmailJS and redirecting only after email has been sent
+	            emailjs.send("service_t0omkv5", "template_wsinzl8", {
+	                to_email: user.email,
+	                email: user.email
+	            })
+	            .then((response) => {
+	                console.log("📧 EmailJS success:", response.status, response.text);
+	                window.location.href = "https://apigoal.com/beta_dashboard";
+	            })
+	            .catch((error) => {
+	                console.error("❌ EmailJS error:", JSON.stringify(error));
+	                alert("⚠️ Error sending confirmation email. Please contact support.");
+	                window.location.href = "https://apigoal.com/beta_dashboard";
+	            });
 	        }
 	    } catch (error) {
-	        console.error("❌ Network Error:", error);
-	        alert("Network error. Try again later.");
+	        console.error("❌ Network Error submitting survey:", error);
+	        alert("Network error. Please try again later.");
 	    }
-	});
-});
+	}); // Closing submit event listener
+	
+	}); // Closing DOMContentLoaded
 </script>
-
 
 </body>
 </html>
