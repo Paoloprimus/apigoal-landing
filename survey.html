@@ -9,7 +9,7 @@ ns<!DOCTYPE html>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 	<script type="text/javascript">
   	(function() {
-    	emailjs.init("nGUt-2a43ExB954uH"); // <-- Sostituisci con la tua Public Key
+    	emailjs.init("nGUt-2a43ExB954uH"); 
   	})();
 	</script>
 </head>
@@ -245,7 +245,7 @@ ns<!DOCTYPE html>
 		<textarea id="custom_request" name="custom_request" class="w-full p-2 border 			rounded-lg mt-1 mb-4" 
           	placeholder="Write here (optional)..."></textarea>
 
-            <!-- Messaggio di contatto -->
+            <!-- Contact message -->
             <p class="text-sm text-gray-600 mb-4">
                 Feel free to contact us at <a href="mailto:info@apigoal.com" class="text-blue-600 underline">info@apigoal.com</a> for any requests.  
                 Thank you for your availability!
@@ -263,7 +263,7 @@ ns<!DOCTYPE html>
 		
 				
             <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">
-                Join Beta-APIGOAL Dashboard
+                Join APIGOAL Beta-Dashboard
             </button>
         </form>
 	    
@@ -302,7 +302,7 @@ ns<!DOCTYPE html>
 document.addEventListener("DOMContentLoaded", async function() {
     console.log("📌 Document loaded. Initializing Supabase...");
 
-    // Blocca immediatamente l'accesso se Supabase non è caricato
+    // Immediately block access if Supabase is not loaded
     if (typeof supabase === 'undefined') {
         console.error("❌ Supabase library not loaded.");
         document.body.innerHTML = `
@@ -323,7 +323,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     const supabaseClient = supabase.createClient(supabaseUrl, supabaseAnonKey);
     console.log("✅ Supabase client initialized:", supabaseClient);
 
-    // Verifica autenticazione utente prima di qualsiasi altra operazione
+    // Check user authentication before performing any other operation
     try {
         console.log("🔍 Checking user authentication...");
         const { data: { user }, error } = await supabaseClient.auth.getUser();
@@ -340,13 +340,13 @@ document.addEventListener("DOMContentLoaded", async function() {
                     </div>
                 </div>
             `;
-            // Importante: interrompe completamente l'esecuzione del resto del codice
+            // Important: completely stops execution of the remaining code
             return;
         }
 
         console.log("✅ User found:", user);
 
-        // Continua con la verifica dello stato del sondaggio solo se l'utente è autenticato
+        // Continue checking survey status only if the user is authenticated
         const { data, error: surveyError } = await supabaseClient
             .from('beta_survey')
             .select('*')
@@ -378,7 +378,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         return;
     }
 
-    // Il resto del codice verrà eseguito solo se l'utente è autenticato e verificato
+    // The rest of the code will only run if the user is authenticated and verified
     
     // Disclaimer modal logic
     document.getElementById("openDisclaimer").addEventListener("click", function () {
@@ -461,7 +461,7 @@ document.addEventListener("DOMContentLoaded", async function() {
 	            console.error("❌ Survey Error:", error);
 	            alert("Error submitting survey. Try again.");
 	        } else {
-	            // Invio Email con EmailJS e redirect solo dopo invio email
+	            // Sending email via EmailJS and redirecting only after email has been sent
 	            emailjs.send("service_t0omkv5", "template_wsinzl8", {
 	                to_email: user.email,
 	                email: user.email
@@ -480,9 +480,9 @@ document.addEventListener("DOMContentLoaded", async function() {
 	        console.error("❌ Network Error submitting survey:", error);
 	        alert("Network error. Please try again later.");
 	    }
-	}); // Chiusura event listener submit
+	}); // Closing submit event listener
 	
-	}); // Chiusura DOMContentLoaded
+	}); // Closing DOMContentLoaded
 </script>
 
 </body>
