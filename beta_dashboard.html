@@ -80,7 +80,7 @@
         const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlbm5ka2dlZWJvb2lremlraGV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIwMjk0NjUsImV4cCI6MjA1NzYwNTQ2NX0.4_Pnkffn1mPUkHyYfk6bDmdWk2L14LTV5hEEvDaWu8c';
         const supabaseClient = supabase.createClient(supabaseUrl, supabaseAnonKey);
 
-        // Verifica se l'utente è già autenticato
+        // Login form handler
         async function checkSession() {
             try {
                 const { data: { user }, error } = await supabaseClient.auth.getUser();
@@ -128,7 +128,7 @@
                     return;
                 }
 
-                // Modifica: Verifica esclusivamente se esiste il campo created_at
+                // Modification: Check exclusively for the existence of the 'created_at' field
                 const { data: surveyData, error: surveyError } = await supabaseClient
                     .from('beta_survey')
                     .select('created_at')
@@ -149,7 +149,7 @@
             }
         });
 
-        // Gestione del logout
+        // Logout handler
         document.getElementById('logout-button').addEventListener('click', async function() {
             try {
                 await supabaseClient.auth.signOut();
@@ -160,7 +160,7 @@
             }
         });
 
-        // Controlla la sessione all'avvio
+        // Check session on startup
         await checkSession();
     });
 </script>
