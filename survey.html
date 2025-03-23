@@ -466,6 +466,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             } else {
                 emailjs.send("service_t0omkv5", "template_wsinzl8", {
                     to_email: user.email
+		    email: user.email  // <-- Aggiungi questa riga fondamentale
                 })
                 .then(() => {
                     console.log("📧 Welcome email sent successfully!");
