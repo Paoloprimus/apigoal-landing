@@ -468,11 +468,11 @@ document.getElementById("closeDisclaimerBottom").addEventListener("click", funct
     		    .catch((error) => {
         		console.error("❌ Failed to send welcome email:", error);
     		    });
-			
 	            window.location.href = "https://apigoal.com/beta_dashboard";
-	        }
-	    } // 👈 chiusura del try
-	}); // 👈 chiusura di addEventListener per submit
+            }
+        } // chiude il try
+    }); // chiude il listener del form
+}); // chiude DOMContentLoaded
 </script>
 
 </body>
