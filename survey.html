@@ -324,7 +324,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                 return;
             }
 
-	if (!user || !user.email_confirmed_at) {
+	if (error || !user || !user.email_confirmed_at) {
 	    console.warn("🚫 No user logged in. Redirecting...");
 	    document.body.innerHTML = `
 	        <div class="flex items-center justify-center min-h-screen bg-gradient-to-b from-gray-100 to-gray-300 text-gray-900">
