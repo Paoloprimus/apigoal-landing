@@ -123,6 +123,8 @@
 
                     document.getElementById('login-container').classList.add('hidden');
                     document.getElementById('dashboard-content').classList.remove('hidden');
+                    await loadUsageLogs(user.id);  // ✅ INSERISCI QUI
+                    console.log("📊 Log caricati per:", user.id);
                 }
             } catch (error) {
                 console.error("❌ Session Check Error:", error);
