@@ -165,10 +165,11 @@
 
   <!-- Pulsante di chiusura -->
   <div class="mt-6 text-center">
-    <button onclick="document.getElementById('usage-expanded').classList.add('hidden')"
-            class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">
+    <button onclick="closeUsageExpanded()"
+        class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">
       Close
     </button>
+
   </div>
 </div>
 
@@ -406,6 +407,11 @@ document.querySelector("[onclick*='Usage clicked']").onclick = async () => {
         // ✅ Check session on startup
         await checkSession();
     });
+
+function closeUsageExpanded() {
+  document.getElementById('usage-expanded').classList.add('hidden');
+  document.getElementById('dashboard-content').classList.remove('hidden');
+}
 
 </script>
     
