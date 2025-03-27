@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APIGOAL Beta Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div id="login-container" class="flex items-center justify-center min-h-screen">
+        <div class="bg-white rounded-xl shadow-xl p-8 max-w-4xl w-full text-center min-h-[850px]">
+            <h1 class="text-3xl font-bold text-gray-800 mb-4 text-center">🔐 Beta Dashboard Login</h1>
+            
+            <div id="error-message" class="hidden bg-red-50 text-red-700 p-4 rounded-lg border border-red-200 mb-4">
+                Invalid credentials. Please try again.
+            </div>
+            
+            <form id="login-form" class="space-y-4">
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                    <input type="email" id="email" name="email" required 
+                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border">
+                </div>
+                
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                    <input type="password" id="password" name="password" required 
+                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border">
+                </div>
+                
+                <div>
+                    <button type="submit" 
+                            class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Sign in
+                    </button>
+                </div>
+            </form>
+            
+            <div class="mt-4 text-center">
+                <a href="https://apigoal.com/index.html" class="text-sm text-blue-600 hover:text-blue-500">
+                    Return to Homepage
+                </a>
+            </div>
+        </div>
+    </div>
+
+  <div id="dashboard-content" class="hidden flex items-center justify-center min-h-screen">
+  <div class="bg-white rounded-xl shadow-xl p-8 max-w-5xl w-full text-center min-h-[700px]">
+
+    <!-- Titolo -->
+    <h1 class="text-3xl font-bold text-gray-800 mb-2">🚀 Your Beta APIGOAL Dashboard</h1>
+    <p class="text-gray-600 text-base mb-6">
+      Thank you for being part of the beta program!
+    </p>
+
+    <!-- Griglia 3x3 -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+
+      <!-- USAGE -->
+      <div onclick="alert('Usage clicked')" class="p-4 border rounded-lg shadow hover:shadow-md hover:scale-[1.02] transition cursor-pointer bg-white">
+        <div class="text-lg font-semibold text-gray-800">Usage</div>
+        <div id="usage-prompts" class="text-blue-600 text-sm mt-1">–</div>
+        <div id="usage-tokens" class="text-blue-600 text-sm mt-1">–</div>
+        <div id="usage-cost" class="text-blue-800 font-bold text-lg mt-2">$0.00</div>
+      </div>
+
+      <!-- LOGS -->
+      <div onclick="alert('Logs clicked')" class="p-4 border rounded-lg shadow hover:shadow-md hover:scale-[1.02] transition cursor-pointer bg-white">
+        <div class="text-lg font-semibold">Logs</div>
+        <div class="text-blue-600 text-sm mt-1">errors</div>
+        <div class="text-green-600 text-sm">security</div>
+      </div>
+
+      <!-- COMPARE -->
+      <div onclick="alert('Compare clicked')" class="p-4 border rounded-lg shadow hover:shadow-md hover:scale-[1.02] transition cursor-pointer bg-white">
+        <div class="text-lg font-semibold">Compare</div>
+        <div class="text-blue-600 text-sm mt-1">GPT 4o = +0.12</div>
+        <div class="text-green-600 text-sm">Claude 3.5 = +0.89</div>
+        <div class="text-red-600 text-sm">Deepseek = -3.02</div>
+      </div>
+
+      <!-- HISTORY -->
+      <div onclick="alert('History clicked')" class="p-4 border rounded-lg shadow hover:shadow-md hover:scale-[1.02] transition cursor-pointer bg-white">
+        <div class="text-lg font-semibold">History</div>
+        <div class="text-blue-600 text-sm mt-1">23 days</div>
+        <div class="text-blue-800 font-bold text-lg">$153.82</div>
+      </div>
+
+      <!-- SWITCHED -->
+      <div onclick="alert('Switched clicked')" class="p-4 border rounded-lg shadow hover:shadow-md hover:scale-[1.02] transition cursor-pointer bg-white">
+        <div class="text-lg font-semibold">Switched</div>
+        <div class="text-sm text-blue-600 mt-1">GPT 4o = 0</div>
+        <div class="text-sm text-blue-600">Claude 3.5 = 0</div>
+      </div>
+
+      <!-- APIs TAB -->
+      <div onclick="alert('APIs tab clicked')" class="p-4 border rounded-lg shadow hover:shadow-md hover:scale-[1.02] transition cursor-pointer bg-white">
+        <div class="text-lg font-semibold">APIs tab</div>
+        <div class="text-blue-600 text-sm mt-1">News</div>
+        <div class="text-blue-600 text-sm">Benchmarks</div>
+      </div>
+
+      <!-- AUTOS -->
+      <div onclick="alert('Autos clicked')" class="p-4 border rounded-lg shadow hover:shadow-md hover:scale-[1.02] transition cursor-pointer bg-white">
+        <div class="text-lg font-semibold">Autos</div>
+        <div class="text-blue-600 text-sm mt-1">switch</div>
+        <div class="text-sm text-green-600">controls</div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div onclick="alert('Settings clicked')" class="p-4 border rounded-lg shadow hover:shadow-md hover:scale-[1.02] transition cursor-pointer bg-white">
+        <div class="text-lg font-semibold">Settings</div>
+        <div class="text-sm text-blue-600 mt-1">theme</div>
+        <div class="text-sm text-blue-600">widgets</div>
+      </div>
+
+      <!-- ACCOUNT -->
+      <div onclick="alert('Account clicked')" class="p-4 border rounded-lg shadow hover:shadow-md hover:scale-[1.02] transition cursor-pointer bg-white">
+        <div class="text-lg font-semibold">Account</div>
+        <div class="text-blue-600 text-sm mt-1">profile</div>
+        <div class="text-green-600 text-sm">reports</div>
+      </div>
+
+    </div>
+
+    <!-- Stato aggiornamento -->
+    <p class="text-xs text-gray-400 mt-6">🟢 Updated just now</p>
+
+    <!-- Logout -->
+    <button id="logout-button" class="mt-6 px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition">
+      Logout
+    </button>
+  </div>
+</div>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", async function() {
+        console.log("📌 Document loaded. Initializing Supabase...");
+
+        if (typeof supabase === 'undefined') {
+            console.error("❌ Supabase library not loaded.");
+            return;
+        }
+
+        const supabaseUrl = 'https://wenndkgeebooikzikhew.supabase.co';
+        const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indlbm5ka2dlZWJvb2lremlraGV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDIwMjk0NjUsImV4cCI6MjA1NzYwNTQ2NX0.4_Pnkffn1mPUkHyYfk6bDmdWk2L14LTV5hEEvDaWu8c';
+        const supabaseClient = supabase.createClient(supabaseUrl, supabaseAnonKey);
+
+        // Login form handler
+        async function checkSession() {
+            try {
+                const { data: { user }, error } = await supabaseClient.auth.getUser();
+
+                if (error || !user || !user.last_sign_in_at) {
+                    document.getElementById('login-container').classList.remove('hidden');
+                    document.getElementById('dashboard-content').classList.add('hidden');
+                } else {
+                    // Modifica: Verifica esclusivamente se esiste il campo created_at
+                    const { data, error: surveyError } = await supabaseClient
+                        .from('beta_survey')
+                        .select('created_at')
+                        .eq('user_id', user.id)
+                        .single();
+
+                    if (surveyError || !data || !data.created_at) {
+                        window.location.href = "https://apigoal.com/survey.html";
+                        return;
+                    }
+
+                    document.getElementById('login-container').classList.add('hidden');
+                    document.getElementById('dashboard-content').classList.remove('hidden');
+                    await loadUsageLogs(user.id);  // ✅ INSERISCI QUI
+                    console.log("📊 Log caricati per:", user.id);
+                }
+            } catch (error) {
+                console.error("❌ Session Check Error:", error);
+            }
+        }
+
+        // Gestione del form di login
+        document.getElementById('login-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const { data, error } = await supabaseClient.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+
+                if (error) {
+                    console.error("❌ Login Error:", error);
+                    document.getElementById('error-message').classList.remove('hidden');
+                    return;
+                }
+
+                // Modification: Check exclusively for the existence of the 'created_at' field
+                const { data: surveyData, error: surveyError } = await supabaseClient
+                    .from('beta_survey')
+                    .select('created_at')
+                    .eq('user_id', data.user.id)
+                    .single();
+
+                if (surveyError || !surveyData || !surveyData.created_at) {
+                    window.location.href = "https://apigoal.com/survey.html";
+                    return;
+                }
+
+                document.getElementById('login-container').classList.add('hidden');
+                document.getElementById('dashboard-content').classList.remove('hidden');
+                document.getElementById('error-message').classList.add('hidden');
+            } catch (error) {
+                console.error("❌ Login Error:", error);
+                document.getElementById('error-message').classList.remove('hidden');
+            }
+        });
+
+        // Logout handler
+        document.getElementById('logout-button').addEventListener('click', async function() {
+            try {
+                await supabaseClient.auth.signOut();
+                document.getElementById('login-container').classList.remove('hidden');
+                document.getElementById('dashboard-content').classList.add('hidden');
+            } catch (error) {
+                console.error("❌ Logout Error:", error);
+            }
+        });
+
+        // ✅ Funzione per caricare i log
+    async function loadUsageLogs(user_id) {
+  try {
+    const { data, error } = await supabaseClient
+      .from("api_logs")
+      .select("timestamp, input_tokens, output_tokens, cost_usd")
+      // .eq("user_id", user_id)
+      .order("timestamp", { ascending: false });
+
+    if (error) {
+      console.error("❌ Errore nel recupero log:", error);
+      return;
+    }
+
+    console.log("📦 Dati ricevuti da Supabase:", data);
+
+    // CALCOLI
+    let totalPrompts = data.length;
+    let totalInput = 0;
+    let totalOutput = 0;
+    let totalCost = 0;
+
+    data.forEach(row => {
+      totalInput += row.input_tokens;
+      totalOutput += row.output_tokens;
+      totalCost += row.cost_usd;
+    });
+
+    // AGGIORNA CARD USAGE
+    document.getElementById("usage-prompts").innerText = `${totalPrompts} prompts`;
+    document.getElementById("usage-tokens").innerText = `${totalInput.toLocaleString()}/${totalOutput.toLocaleString()} tokens`;
+    document.getElementById("usage-cost").innerText = `$${totalCost.toFixed(2)}`;
+
+  } catch (e) {
+    console.error("❌ Errore in loadUsageLogs:", e);
+  }
+}
+
+        // ✅ Check session on startup
+        await checkSession();
+    });
+
+</script>
+    
+</body>
+</html>
