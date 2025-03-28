@@ -361,17 +361,17 @@
                 tr.innerHTML = `
                     <td class="py-2 px-3 text-sm text-gray-700">${index + 1}</td>
                     <td class="py-2 px-3 text-sm text-gray-600">${hhmmss}</td>
-                    <td class="py-2 px-3 text-sm text-blue-600">${log.input_tokens}</td>
-                    <td class="py-2 px-3 text-sm text-green-600">${log.output_tokens}</td>
                     <td class="py-2 px-3 text-sm text-gray-900 font-medium">${log.provider || '-'}</td>
                     <td class="py-2 px-3 text-sm text-gray-900 font-medium">${log.model || '-'}</td>
+                    <td class="py-2 px-3 text-sm text-blue-600">${log.input_tokens}</td>
+                    <td class="py-2 px-3 text-sm text-green-600">${log.output_tokens}</td>
                     <td class="py-2 px-3 text-sm text-gray-900 font-medium">$${log.cost_usd.toFixed(5)}</td>
                 `;
                 usageRows.appendChild(tr);
             });
 
             totalsRow.innerHTML = `
-                <td class="py-2 px-3 font-semibold text-right" colspan="2">Total</td>
+                <td class="py-2 px-3 font-semibold text-right" colspan="4">Total</td>
                 <td class="py-2 px-3 font-semibold text-blue-800">${totalInput}</td>
                 <td class="py-2 px-3 font-semibold text-green-800">${totalOutput}</td>
                 <td colspan="2"></td>
