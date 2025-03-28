@@ -251,6 +251,7 @@
 
                 document.getElementById('login-container').classList.add('hidden');
                 document.getElementById('dashboard-content').classList.remove('hidden');
+                await loadUsageLogs(data.user.id); // ✅ Carica la scheda usage dopo login manuale
                 document.getElementById('error-message').classList.add('hidden');
             } catch (error) {
                 console.error("❌ Login Error:", error);
