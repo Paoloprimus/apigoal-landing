@@ -338,7 +338,7 @@
         // ✅ Tabella dettagliata giornaliera
         function showUsageExpanded(logs) {
 
-            const titleDate = new Date().toLocaleDateString('en-US', {
+            const titleDate = new Date().toLocaleDateString(navigator.language, {
               year: 'numeric',
               month: 'short',
               day: 'numeric'
