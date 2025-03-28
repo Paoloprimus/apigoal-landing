@@ -319,7 +319,8 @@
                     `${dateToday.slice(5).replace("-", "/")}/${dateToday.slice(2, 4)} at ${hh}:${mm}`;
 
                 document.getElementById("usage-prompts").innerText = `${todayPrompts}`;
-                document.getElementById("usage-tokens").innerText = `${todayInput}/${todayOutput}`;
+                    const totalTokens = todayInput + todayOutput;
+                    document.getElementById("usage-tokens").innerText = `${todayInput}/${todayOutput} – ${totalTokens}`;
                 document.getElementById("usage-cost").innerText = `$ ${todayCost.toFixed(2)}`;
 
                 if (delta !== null) {
