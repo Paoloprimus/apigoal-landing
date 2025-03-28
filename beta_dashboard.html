@@ -370,13 +370,16 @@
                 usageRows.appendChild(tr);
             });
 
-            totalsRow.innerHTML = `
-                <td class="py-2 px-3 font-semibold text-right" colspan="4">Total</td>
-                <td class="py-2 px-3 font-semibold text-blue-800">${totalInput}</td>
-                <td class="py-2 px-3 font-semibold text-green-800">${totalOutput}</td>
-                <td colspan="2"></td>
-                <td class="py-2 px-3 font-semibold text-gray-900">$${totalCost.toFixed(5)}</td>
-            `;
+                totalsRow.innerHTML = `
+                  <td colspan="7" class="pt-4">
+                    <div class="flex justify-end gap-8 text-sm text-gray-700 border-t border-gray-200 pt-4 mt-2">
+                      <span class="font-semibold text-blue-800">Total Input: ${totalInput}</span>
+                      <span class="font-semibold text-green-800">Total Output: ${totalOutput}</span>
+                      <span class="font-semibold text-gray-900">Total Cost: $${totalCost.toFixed(5)}</span>
+                    </div>
+                  </td>
+                `;
+
 
             document.getElementById("dashboard-content").classList.add("hidden");
             document.getElementById("usage-expanded").classList.remove("hidden");
