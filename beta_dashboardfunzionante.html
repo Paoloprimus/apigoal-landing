@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,7 +9,7 @@
 </head>
 <body class="bg-gray-100 min-h-screen">
     <div id="login-container" class="flex items-center justify-center min-h-screen">
-        <div class="bg-white rounded-xl shadow-xl p-8 max-w-md w-full">
+        <div class="bg-white rounded-xl shadow-xl p-8 max-w-4xl w-full text-center min-h-[850px]">
             <h1 class="text-3xl font-bold text-gray-800 mb-4 text-center">🔐 Beta Dashboard Login</h1>
             
             <div id="error-message" class="hidden bg-red-50 text-red-700 p-4 rounded-lg border border-red-200 mb-4">
@@ -46,27 +45,136 @@
         </div>
     </div>
 
-    <div id="dashboard-content" class="hidden flex items-center justify-center min-h-screen">
-        <div class="bg-white rounded-xl shadow-xl p-8 max-w-md w-full text-center">
-            <h1 class="text-3xl font-bold text-gray-800 mb-4">🚀 Welcome to your Beta Dashboard</h1>
-            
-            <p class="text-gray-600 text-base mb-6">
-                Thank you for completing the survey.  
-                From here you'll be able to monitor your AI API usage, track costs, and access insights.  
-                This is your control panel to APIGOAL.
-            </p>
-            <div class="bg-green-50 text-green-700 p-4 rounded-lg border border-green-200 mb-4">
-                🎉 You're now part of the beta program!
-            </div>
-            <p class="text-sm text-gray-500 mb-6">
-                More features will appear here soon...
-            </p>
-            
-            <button id="logout-button" class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition">
-                Logout
-            </button>
-        </div>
+  <div id="dashboard-content" class="hidden flex items-center justify-center min-h-screen">
+  <div class="bg-white rounded-xl shadow-xl p-8 max-w-5xl w-full text-center min-h-[700px]">
+
+    <!-- Titolo -->
+    <h1 class="text-3xl font-bold text-gray-800 mb-2">🚀 Your Beta APIGOAL Dashboard</h1>
+    <p class="text-gray-600 text-base mb-6">
+      Thank you for being part of the beta program!
+    </p>
+
+    <!-- Griglia 3x3 -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+
+      <!-- USAGE -->
+    <div onclick="alert('Usage clicked')" class="p-4 border rounded-lg shadow hover:shadow-md hover:scale-[1.02] transition cursor-pointer bg-white">
+      <div class="text-lg font-semibold text-gray-800">usage</div>
+      <div id="usage-timestamp" class="text-blue-600 text-sm mt-1">–</div>
+      <div id="usage-prompts" class="text-blue-600 text-sm mt-1">–</div>
+      <div id="usage-tokens" class="text-blue-600 text-sm mt-1">–</div>
+      <div id="usage-cost" class="text-blue-800 font-bold text-sm mt-1">–</div>
+      <div id="usage-cost-avg" class="text-blue-800 text-sm mt-1">–</div>
     </div>
+
+      <!-- LOGS -->
+      <div onclick="alert('Logs clicked')" class="p-4 border rounded-lg shadow hover:shadow-md hover:scale-[1.02] transition cursor-pointer bg-white">
+        <div class="text-lg font-semibold">Logs</div>
+        <div class="text-blue-600 text-sm mt-1">errors</div>
+        <div class="text-green-600 text-sm">security</div>
+      </div>
+
+      <!-- COMPARE -->
+      <div onclick="alert('Compare clicked')" class="p-4 border rounded-lg shadow hover:shadow-md hover:scale-[1.02] transition cursor-pointer bg-white">
+        <div class="text-lg font-semibold">Compare</div>
+        <div class="text-blue-600 text-sm mt-1">GPT 4o = +0.12</div>
+        <div class="text-green-600 text-sm">Claude 3.5 = +0.89</div>
+        <div class="text-red-600 text-sm">Deepseek = -3.02</div>
+      </div>
+
+      <!-- HISTORY -->
+      <div onclick="alert('History clicked')" class="p-4 border rounded-lg shadow hover:shadow-md hover:scale-[1.02] transition cursor-pointer bg-white">
+        <div class="text-lg font-semibold">History</div>
+        <div class="text-blue-600 text-sm mt-1">23 days</div>
+        <div class="text-blue-800 font-bold text-lg">$153.82</div>
+      </div>
+
+      <!-- SWITCHED -->
+      <div onclick="alert('Switched clicked')" class="p-4 border rounded-lg shadow hover:shadow-md hover:scale-[1.02] transition cursor-pointer bg-white">
+        <div class="text-lg font-semibold">Switched</div>
+        <div class="text-sm text-blue-600 mt-1">GPT 4o = 0</div>
+        <div class="text-sm text-blue-600">Claude 3.5 = 0</div>
+      </div>
+
+      <!-- APIs TAB -->
+      <div onclick="alert('APIs tab clicked')" class="p-4 border rounded-lg shadow hover:shadow-md hover:scale-[1.02] transition cursor-pointer bg-white">
+        <div class="text-lg font-semibold">APIs tab</div>
+        <div class="text-blue-600 text-sm mt-1">News</div>
+        <div class="text-blue-600 text-sm">Benchmarks</div>
+      </div>
+
+      <!-- AUTOS -->
+      <div onclick="alert('Autos clicked')" class="p-4 border rounded-lg shadow hover:shadow-md hover:scale-[1.02] transition cursor-pointer bg-white">
+        <div class="text-lg font-semibold">Autos</div>
+        <div class="text-blue-600 text-sm mt-1">switch</div>
+        <div class="text-sm text-green-600">controls</div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div onclick="alert('Settings clicked')" class="p-4 border rounded-lg shadow hover:shadow-md hover:scale-[1.02] transition cursor-pointer bg-white">
+        <div class="text-lg font-semibold">Settings</div>
+        <div class="text-sm text-blue-600 mt-1">theme</div>
+        <div class="text-sm text-blue-600">widgets</div>
+      </div>
+
+      <!-- ACCOUNT -->
+      <div onclick="alert('Account clicked')" class="p-4 border rounded-lg shadow hover:shadow-md hover:scale-[1.02] transition cursor-pointer bg-white">
+        <div class="text-lg font-semibold">Account</div>
+        <div class="text-blue-600 text-sm mt-1">profile</div>
+        <div class="text-green-600 text-sm">reports</div>
+      </div>
+
+    </div>
+
+    <!-- Stato aggiornamento -->
+    <!-- <p class="text-xs text-gray-400 mt-6">🟢 Updated just now</p> -->
+
+    <!-- Logout -->
+    <button id="logout-button" class="mt-6 px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition">
+      Logout
+    </button>
+  </div>
+</div>
+
+<!-- Container per la vista espansa della scheda Usage -->
+<div id="usage-expanded" class="hidden max-w-5xl mx-auto bg-white rounded-lg shadow-md p-6 mt-6">
+  <h2 class="text-2xl font-bold text-gray-800 mb-4">📊 Today's Usage Details</h2>
+
+  <!-- Tabella log prompt del giorno -->
+  <div class="overflow-x-auto">
+    <table class="min-w-full table-auto border border-gray-200">
+      <thead class="bg-gray-100 text-gray-700 text-sm">
+        <tr>
+          <th class="px-4 py-2 border">#</th>
+          <th class="px-4 py-2 border">Timestamp</th>
+          <th class="px-4 py-2 border">Provider</th>
+          <th class="px-4 py-2 border">Model</th>
+          <th class="px-4 py-2 border">Input</th>
+          <th class="px-4 py-2 border">Output</th>
+          <th class="px-4 py-2 border">Cost (USD)</th>
+        </tr>
+      </thead>
+      <tbody id="usage-expanded-rows" class="text-sm text-gray-800">
+        <!-- Riempito via JS -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Totali -->
+  <div class="mt-4 text-right text-sm font-medium text-gray-700">
+    <div id="usage-expanded-totals">Loading totals...</div>
+  </div>
+
+  <!-- Pulsante di chiusura -->
+  <div class="mt-6 text-center">
+    <button onclick="closeUsageExpanded()"
+            class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">
+      Close
+    </button>
+  </div>
+</div>
+
+
 
 <script>
     document.addEventListener("DOMContentLoaded", async function() {
@@ -104,6 +212,8 @@
 
                     document.getElementById('login-container').classList.add('hidden');
                     document.getElementById('dashboard-content').classList.remove('hidden');
+                    await loadUsageLogs(user.id);  // ✅ INSERISCI QUI
+                    console.log("📊 Log caricati per:", user.id);
                 }
             } catch (error) {
                 console.error("❌ Session Check Error:", error);
@@ -161,9 +271,150 @@
             }
         });
 
-        // Check session on startup
+        // ✅ Funzione per caricare i log
+    async function loadUsageLogs(user_id) {
+  try {
+    const { data, error } = await supabaseClient
+      .from("api_logs")
+      .select("timestamp, input_tokens, output_tokens, cost_usd");
+
+    if (error) {
+      console.error("❌ Errore nel recupero log:", error);
+      return;
+    }
+
+    // Gruppi temporali
+    const today = new Date();
+    const dateToday = today.toISOString().slice(0, 10); // yyyy-mm-dd
+    const dateYesterday = new Date(today);
+    dateYesterday.setDate(today.getDate() - 1);
+    const dateY = dateYesterday.toISOString().slice(0, 10);
+
+    // Inizializzazioni
+    let todayPrompts = 0, todayInput = 0, todayOutput = 0, todayCost = 0;
+    let yesterdayCost = null;
+
+    data.forEach(row => {
+      const ts = new Date(row.timestamp);
+      const date = ts.toISOString().slice(0, 10);
+
+      if (date === dateToday) {
+        todayPrompts++;
+        todayInput += row.input_tokens;
+        todayOutput += row.output_tokens;
+        todayCost += row.cost_usd;
+      }
+
+      if (date === dateY) {
+        if (yesterdayCost === null) yesterdayCost = 0;
+        yesterdayCost += row.cost_usd;
+      }
+    });
+
+    // Calcoli
+    const avgCost = todayPrompts > 0 ? todayCost / todayPrompts : 0;
+    const delta = yesterdayCost !== null ? todayCost - yesterdayCost : null;
+
+    // Aggiorna UI
+    const pad = num => String(num).padStart(2, "0");
+    const now = new Date();
+    const hh = pad(now.getHours());
+    const mm = pad(now.getMinutes());
+    document.getElementById("usage-timestamp").innerText =
+      `${dateToday.slice(5).replace("-", "/")}/${dateToday.slice(2, 4)} at ${hh}:${mm}`;
+
+    document.getElementById("usage-prompts").innerText = `${todayPrompts}`;
+    document.getElementById("usage-tokens").innerText = `${todayInput}/${todayOutput}`;
+    document.getElementById("usage-cost").innerText = `$ ${todayCost.toFixed(2)}`;
+
+    if (delta !== null) {
+      const deltaSign = delta >= 0 ? "+" : "";
+      document.getElementById("usage-cost").innerText += ` [${deltaSign}${delta.toFixed(2)}/y]`;
+    } else {
+      document.getElementById("usage-cost").innerText += ` [no data/y]`;
+    }
+
+    document.getElementById("usage-cost-avg").innerText = `$ ${avgCost.toFixed(4)}/prompt`;
+
+  } catch (e) {
+    console.error("❌ Errore in loadUsageLogs:", e);
+  }
+}
+
+// Mostra la tabella estesa Usage e popola i dati
+function showUsageExpanded(logs) {
+  const usageRows = document.getElementById("usage-expanded-rows");
+  const totalsRow = document.getElementById("usage-expanded-totals");
+  usageRows.innerHTML = "";
+  totalsRow.innerHTML = "";
+
+  // Filtra i log della giornata
+  const today = new Date().toISOString().slice(0, 10);
+  const todayLogs = logs.filter(log => log.timestamp.slice(0, 10) === today);
+
+  let totalInput = 0, totalOutput = 0, totalCost = 0;
+
+  todayLogs.forEach((log, index) => {
+    const tr = document.createElement("tr");
+    tr.classList.add("border-b");
+
+    const date = new Date(log.timestamp);
+    const hhmmss = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+    totalInput += log.input_tokens;
+    totalOutput += log.output_tokens;
+    totalCost += log.cost_usd;
+
+    tr.innerHTML = `
+      <td class="py-2 px-3 text-sm text-gray-700">${index + 1}</td>
+      <td class="py-2 px-3 text-sm text-gray-600">${hhmmss}</td>
+      <td class="py-2 px-3 text-sm text-blue-600">${log.input_tokens}</td>
+      <td class="py-2 px-3 text-sm text-green-600">${log.output_tokens}</td>
+      <td class="py-2 px-3 text-sm text-gray-900 font-medium">$${log.cost_usd.toFixed(5)}</td>
+    `;
+    usageRows.appendChild(tr);
+  });
+
+  totalsRow.innerHTML = `
+    <td class="py-2 px-3 font-semibold text-right" colspan="2">Total</td>
+    <td class="py-2 px-3 font-semibold text-blue-800">${totalInput}</td>
+    <td class="py-2 px-3 font-semibold text-green-800">${totalOutput}</td>
+    <td class="py-2 px-3 font-semibold text-gray-900">$${totalCost.toFixed(5)}</td>
+  `;
+
+  // Mostra la sezione
+  document.getElementById("dashboard-content").classList.add("hidden");
+  document.getElementById("usage-expanded").classList.remove("hidden");
+}
+
+// Collega il click alla card Usage
+document.querySelector("[onclick*='Usage clicked']").onclick = async () => {
+  try {
+    const { data, error } = await supabaseClient
+      .from("api_logs")
+      .select("timestamp, input_tokens, output_tokens, cost_usd");
+
+    if (error) {
+      console.error("Errore Supabase:", error);
+      return;
+    }
+
+    showUsageExpanded(data);
+  } catch (err) {
+    console.error("Errore:", err);
+  }
+};
+
+        
+        // ✅ Check session on startup
         await checkSession();
     });
+
+function closeUsageExpanded() {
+  document.getElementById('usage-expanded').classList.add('hidden');
+  document.getElementById('dashboard-content').classList.remove('hidden');
+}
+
 </script>
     
 </body>
