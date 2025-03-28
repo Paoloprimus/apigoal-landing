@@ -337,6 +337,15 @@
 
         // ✅ Tabella dettagliata giornaliera
         function showUsageExpanded(logs) {
+
+            const titleDate = new Date().toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'short',
+              day: 'numeric'
+            });
+            document.getElementById("usage-expanded-title").innerText = `📊 ${titleDate} Usage Details`;
+
+            
             const usageRows = document.getElementById("usage-expanded-rows");
             const totalsRow = document.getElementById("usage-expanded-totals");
             usageRows.innerHTML = "";
