@@ -271,13 +271,141 @@
             }
         });
 
-// Collega il click alla card Usage
-// 🎯 Collega il click alla card Usage
-const usageCard = document.querySelector("#dashboard-content .usage-card");
-if (usageCard) {
-  usageCard.addEventListener("click", () => showUsageExpanded());
+        // ✅ Funzione per caricare i log
+    async function loadUsageLogs(user_id) {
+  try {
+    const { data, error } = await supabaseClient
+      .from("api_logs")
+      .select("timestamp, input_tokens, output_tokens, cost_usd");
+
+    if (error) {
+      console.error("❌ Errore nel recupero log:", error);
+      return;
+    }
+
+    // Gruppi temporali
+    const today = new Date();
+    const dateToday = today.toISOString().slice(0, 10); // yyyy-mm-dd
+    const dateYesterday = new Date(today);
+    dateYesterday.setDate(today.getDate() - 1);
+    const dateY = dateYesterday.toISOString().slice(0, 10);
+
+    // Inizializzazioni
+    let todayPrompts = 0, todayInput = 0, todayOutput = 0, todayCost = 0;
+    let yesterdayCost = null;
+
+    data.forEach(row => {
+      const ts = new Date(row.timestamp);
+      const date = ts.toISOString().slice(0, 10);
+
+      if (date === dateToday) {
+        todayPrompts++;
+        todayInput += row.input_tokens;
+        todayOutput += row.output_tokens;
+        todayCost += row.cost_usd;
+      }
+
+      if (date === dateY) {
+        if (yesterdayCost === null) yesterdayCost = 0;
+        yesterdayCost += row.cost_usd;
+      }
+    });
+
+    // Calcoli
+    const avgCost = todayPrompts > 0 ? todayCost / todayPrompts : 0;
+    const delta = yesterdayCost !== null ? todayCost - yesterdayCost : null;
+
+    // Aggiorna UI
+    const pad = num => String(num).padStart(2, "0");
+    const now = new Date();
+    const hh = pad(now.getHours());
+    const mm = pad(now.getMinutes());
+    document.getElementById("usage-timestamp").innerText =
+      `${dateToday.slice(5).replace("-", "/")}/${dateToday.slice(2, 4)} at ${hh}:${mm}`;
+
+    document.getElementById("usage-prompts").innerText = `${todayPrompts}`;
+    document.getElementById("usage-tokens").innerText = `${todayInput}/${todayOutput}`;
+    document.getElementById("usage-cost").innerText = `$ ${todayCost.toFixed(2)}`;
+
+    if (delta !== null) {
+      const deltaSign = delta >= 0 ? "+" : "";
+      document.getElementById("usage-cost").innerText += ` [${deltaSign}${delta.toFixed(2)}/y]`;
+    } else {
+      document.getElementById("usage-cost").innerText += ` [no data/y]`;
+    }
+
+    document.getElementById("usage-cost-avg").innerText = `$ ${avgCost.toFixed(4)}/prompt`;
+
+  } catch (e) {
+    console.error("❌ Errore in loadUsageLogs:", e);
+  }
 }
 
+// Mostra la tabella estesa Usage e popola i dati
+function showUsageExpanded(logs) {
+  const usageRows = document.getElementById("usage-expanded-rows");
+  const totalsRow = document.getElementById("usage-expanded-totals");
+  usageRows.innerHTML = "";
+  totalsRow.innerHTML = "";
+
+  // Filtra i log della giornata
+  const today = new Date().toISOString().slice(0, 10);
+  const todayLogs = logs.filter(log => log.timestamp.slice(0, 10) === today);
+
+  let totalInput = 0, totalOutput = 0, totalCost = 0;
+
+  todayLogs.forEach((log, index) => {
+    const tr = document.createElement("tr");
+    tr.classList.add("border-b");
+
+    const date = new Date(log.timestamp);
+    const hhmmss = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+    totalInput += log.input_tokens;
+    totalOutput += log.output_tokens;
+    totalCost += log.cost_usd;
+
+    tr.innerHTML = `
+      <td class="py-2 px-3 text-sm text-gray-700">${index + 1}</td>
+      <td class="py-2 px-3 text-sm text-gray-600">${hhmmss}</td>
+      <td class="py-2 px-3 text-sm text-blue-600">${log.input_tokens}</td>
+      <td class="py-2 px-3 text-sm text-green-600">${log.output_tokens}</td>
+      <td class="py-2 px-3 text-sm text-gray-900 font-medium">$${log.cost_usd.toFixed(5)}</td>
+    `;
+    usageRows.appendChild(tr);
+  });
+
+  totalsRow.innerHTML = `
+    <td class="py-2 px-3 font-semibold text-right" colspan="2">Total</td>
+    <td class="py-2 px-3 font-semibold text-blue-800">${totalInput}</td>
+    <td class="py-2 px-3 font-semibold text-green-800">${totalOutput}</td>
+    <td class="py-2 px-3 font-semibold text-gray-900">$${totalCost.toFixed(5)}</td>
+  `;
+
+  // Mostra la sezione
+  document.getElementById("dashboard-content").classList.add("hidden");
+  document.getElementById("usage-expanded").classList.remove("hidden");
+}
+
+// Collega il click alla card Usage
+document.querySelector("[onclick*='Usage clicked']").onclick = async () => {
+  try {
+    const { data, error } = await supabaseClient
+      .from("api_logs")
+      .select("timestamp, input_tokens, output_tokens, cost_usd");
+
+    if (error) {
+      console.error("Errore Supabase:", error);
+      return;
+    }
+
+    showUsageExpanded(data);
+  } catch (err) {
+    console.error("Errore:", err);
+  }
+};
+
+        
         // ✅ Check session on startup
         await checkSession();
     });
